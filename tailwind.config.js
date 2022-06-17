@@ -17,6 +17,7 @@ module.exports = {
         'nft-black-3': '#2A2D3A',
         'nft-black-4': '#24252D',
         'nft-red-violet': '#DA18A3',
+        'otto-color': '#8446E5',
         'file-active': '#2196f3',
         'file-accept': '#00e676',
         'file-reject': '#ff1744',
@@ -66,7 +67,7 @@ module.exports = {
       minlg: '2100px',
     },
     fontFamily: {
-      poppins: ['Poppins', 'sans-serif'],
+      roboto: ['Roboto', 'sans-serif'],
     },
   },
   variants: {

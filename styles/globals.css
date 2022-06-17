@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
 
 /* ./styles/globals.css */
 @tailwind base;
@@ -6,11 +6,15 @@
 @tailwind utilities;
 
 .nft-gradient {
-   background: linear-gradient(101.12deg, #EB1484 27.35%, #C91CC3 99.99%, #C81CC5 100%, #C81CC5 100%);
+   background: linear-gradient(101.12deg, #51346C 27.35%, #51346C 80%, #8446E5 100%, #8446E5 100%);
 }
 
 .white-bg {
     background: rgba(255, 255, 255, 0.2);
+}
+
+.otto-bg {
+    background: rgb(82, 52, 108);
 }
 
 .nav-h {

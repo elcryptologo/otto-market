@@ -6,6 +6,7 @@ import Link from 'next/link';
 
 import images from '../assets';
 import { NFTContext } from '../context/NFTContext';
+import { TMDBContext } from '../context/TMDBService';
 import Button from './Button';
 
 const MenuItems = ({ isMobile, active, setActive, setIsOpen }) => {
@@ -32,7 +33,7 @@ const MenuItems = ({ isMobile, active, setActive, setIsOpen }) => {
 
             if (isMobile) setIsOpen(false);
           }}
-          className={`flex flex-row items-center font-poppins font-semibold text-base dark:hover:text-white hover:text-nft-dark mx-3
+          className={`flex flex-row items-center font-roboto font-semibold text-base dark:hover:text-white hover:text-nft-dark mx-3
           ${active === item
             ? 'dark:text-white text-nft-black-1'
             : 'dark:text-nft-gray-3 text-nft-gray-2'} 
@@ -45,7 +46,37 @@ const MenuItems = ({ isMobile, active, setActive, setIsOpen }) => {
   );
 };
 
-const ButtonGroup = ({ setActive, router }) => {
+const LoginButtonGroup = ({ router }) => {
+  const { session, GetSessionURL, DeleteSession } = useContext(TMDBContext);
+  const { connectWallet, currentAccount } = useContext(NFTContext);
+
+  return session === '' ? (
+    <div className="flexCenter">
+      <Button
+        btnName="Login"
+        btnType="primary"
+        classStyles="mx-2 rounded-xl"
+        handleClick={async () => {
+          if (!currentAccount) await connectWallet();
+          console.log('passed connected wallet');
+          console.log(GetSessionURL());
+          router.push(await GetSessionURL());
+        }}
+      />
+    </div>
+  ) : (
+    <Button
+      btnName="Logout"
+      btnType="outline"
+      classStyles="mx-2 rounded-lg"
+      handleClick={async () => {
+        await DeleteSession();
+      }}
+    />
+  );
+};
+
+const WalletButtonGroup = ({ setActive, router }) => {
   const { connectWallet, currentAccount } = useContext(NFTContext);
 
   return currentAccount ? (
@@ -117,8 +148,8 @@ const Navbar = () => {
       <div className="flex flex-1 flex-row justify-start">
         <Link href="/">
           <div className="flexCenter md:hidden cursor-pointer" onClick={() => setActive('Explore NFTs')}>
-            <Image src={images.logo02} objectFit="contain" width={32} height={32} alt="logo" />
-            <p className=" dark:text-white text-nft-black-1 font-semibold text-lg ml-1">CryptoKet</p>
+            <Image src={images.ottoicon} objectFit="contain" width={32} height={32} alt="logo" />
+            <p className=" dark:text-white text-nft-black-1 font-semibold text-lg ml-1">Otto</p>
           </div>
         </Link>
         <Link href="/">
@@ -129,13 +160,13 @@ const Navbar = () => {
               setIsOpen(false);
             }}
           >
-            <Image src={images.logo02} objectFit="contain" width={32} height={32} alt="logo" />
+            <Image src={images.ottoicon} objectFit="contain" width={32} height={32} alt="logo" />
           </div>
         </Link>
       </div>
 
       <div className="flex flex-initial flex-row justify-end">
-        <div className="flex items-center mr-2">
+        {/* <div className="flex items-center mr-2">
           <input
             type="checkbox"
             className="checkbox"
@@ -147,6 +178,10 @@ const Navbar = () => {
             <i className="fas fa-moon" />
             <div className="w-3 h-3 absolute bg-white rounded-full ball" />
           </label>
+        </div> */}
+
+        <div className="flex border-otto-color">
+          <LoginButtonGroup router={router} />
         </div>
 
         <div className="md:hidden flex">
@@ -154,7 +189,7 @@ const Navbar = () => {
             <MenuItems active={active} setActive={setActive} />
           </ul>
           <div className="ml-4">
-            <ButtonGroup setActive={setActive} router={router} />
+            <WalletButtonGroup setActive={setActive} router={router} />
           </div>
         </div>
       </div>
@@ -190,7 +225,7 @@ const Navbar = () => {
               <MenuItems active={active} setActive={setActive} isMobile setIsOpen={setIsOpen} />
             </div>
             <div className="p-4 border-t dark:border-nft-black-1 border-nft-gray-1">
-              <ButtonGroup setActive={setActive} router={router} />
+              <WalletButtonGroup setActive={setActive} router={router} />
             </div>
           </div>
         )}

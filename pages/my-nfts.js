@@ -2,16 +2,19 @@ import { useEffect, useState, useContext } from 'react';
 import Image from 'next/image';
 
 import { NFTContext } from '../context/NFTContext';
+import { TMDBContext } from '../context/TMDBService';
 import { shortenAddress } from '../utils/shortenAddress';
 import { Loader, NFTCard, SearchBar, Banner } from '../components';
 import images from '../assets';
 
 const MyNFTs = () => {
   const { fetchMyNFTsOrCreatedNFTs, currentAccount } = useContext(NFTContext);
+  const { session, userName, GetGravatarURL } = useContext(TMDBContext);
   const [nfts, setNfts] = useState([]);
   const [nftsCopy, setNftsCopy] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeSelect, setActiveSelect] = useState('Recently Added');
+  const avatarImg = GetGravatarURL();
 
   useEffect(() => {
     fetchMyNFTsOrCreatedNFTs('fetchMyNFTs')
@@ -20,7 +23,7 @@ const MyNFTs = () => {
         setNftsCopy(items);
         setIsLoading(false);
       });
-  }, []);
+  }, [session, avatarImg]);
 
   useEffect(() => {
     const sortedNfts = [...nfts];
@@ -76,15 +79,17 @@ const MyNFTs = () => {
 
         <div className="flexCenter flex-col -mt-20 z-0">
           <div className="flexCenter w-40 h-40 sm:w-36 sm:h-36 p-1 bg-nft-black-2 rounded-full">
-            <Image src={images.creator1} className="rounded-full object-cover" objectFit="cover" />
+            {(session && avatarImg)
+              ? (<Image loader={() => avatarImg} width={200} height={200} src={avatarImg} className="rounded-full object-cover" objectFit="cover" />
+              ) : (<Image src={images.creator1} className="rounded-full object-cover" objectFit="cover" />)}
           </div>
-          <p className="font-poppins dark:text-white text-nft-black-1 font-semibold text-2xl mt-6">{shortenAddress(currentAccount)}</p>
+          <p className="font-roboto dark:text-white text-nft-black-1 font-semibold text-2xl mt-6">{(session) ? (userName) : (shortenAddress(currentAccount))}</p>
         </div>
       </div>
 
       {(!isLoading && nfts.length === 0) ? (
         <div className="flexCenter sm:p-4 p-16">
-          <h1 className="font-poppins dark:text-white text-nft-black-1 text-3xl font-extrabold">No NFTs owned</h1>
+          <h1 className="font-roboto dark:text-white text-nft-black-1 text-3xl font-extrabold">No NFTs owned</h1>
         </div>
       ) : (
         <div className="sm:px-4 p-12 w-full minmd:w-4/5 flexCenter flex-col">

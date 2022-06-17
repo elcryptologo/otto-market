@@ -38,7 +38,7 @@ const SearchBar = ({ activeSelect, setActiveSelect, handleSearch, clearSearch })
         <input
           type="text"
           placeholder="Search item here"
-          className="dark:bg-nft-black-2 bg-white mx-4 w-full font-poppins dark:text-white text-nft-black-1 font-normal text-xs outline-none"
+          className="dark:bg-nft-black-2 bg-white mx-4 w-full font-roboto dark:text-white text-nft-black-1 font-normal text-xs outline-none"
           onChange={(e) => setDebouncedSearch(e.target.value)}
           value={debouncedSearch}
         />
@@ -48,7 +48,7 @@ const SearchBar = ({ activeSelect, setActiveSelect, handleSearch, clearSearch })
         onClick={() => setToggle(!toggle)}
         className="relative flexBetween ml-4 sm:ml-0 sm:mt-2 min-w-190 cursor-pointer dark:bg-nft-black-2 bg-white border dark:border-nft-black-2 border-nft-gray-2 py-3 px-4 rounded-md"
       >
-        <p className="font-poppins dark:text-white text-nft-black-1 font-normal text-xs">{activeSelect}</p>
+        <p className="font-roboto dark:text-white text-nft-black-1 font-normal text-xs">{activeSelect}</p>
         <Image
           src={images.arrow}
           objectFit="contain"
@@ -62,7 +62,7 @@ const SearchBar = ({ activeSelect, setActiveSelect, handleSearch, clearSearch })
           <div className="absolute top-full left-0 right-0 w-full mt-3 z-10 dark:bg-nft-black-2 bg-white border dark:border-nft-black-2 border-nft-gray-2 py-3 px-4 rounded-md">
             {['Recently added', 'Price (low to high)', 'Price (high to low)'].map((item) => (
               <p
-                className="font-poppins dark:text-white text-nft-black-1 font-normal text-xs my-3 cursor-pointer"
+                className="font-roboto dark:text-white text-nft-black-1 font-normal text-xs my-3 cursor-pointer"
                 onClick={() => setActiveSelect(item)}
                 key={item}
               >

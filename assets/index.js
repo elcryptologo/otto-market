@@ -1,6 +1,8 @@
 import heartOutline from './heart-outline.png';
 import heart from './heart.png';
 import logo from './logo.png';
+import otto from './Otto_logo.png';
+import ottoicon from './Otto_Icon.png';
 import search from './Search.png';
 import tick from './tick.png';
 import cross from './cross.png';
@@ -42,6 +44,8 @@ export default {
   heartOutline,
   heart,
   logo,
+  otto,
+  ottoicon,
   search,
   tick,
   cross,
