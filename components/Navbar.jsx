@@ -1,6 +1,7 @@
 import { useEffect, useState, useContext } from 'react';
 import { useRouter } from 'next/router';
 import { useTheme } from 'next-themes';
+import { useAlert } from 'react-alert';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -10,6 +11,9 @@ import { TMDBContext } from '../context/TMDBService';
 import Button from './Button';
 
 const MenuItems = ({ isMobile, active, setActive, setIsOpen }) => {
+  const { session } = useContext(TMDBContext);
+  const alert = useAlert();
+
   const generateLink = (i) => {
     switch (i) {
       case 0:
@@ -24,22 +28,29 @@ const MenuItems = ({ isMobile, active, setActive, setIsOpen }) => {
   };
 
   return (
+
     <ul className={`list-none flexCenter flex-row ${isMobile && 'flex-col h-full'}`}>
-      {['Explore NFTs', 'Listed NFTs', 'My NFTs'].map((item, i) => (
+      {['Explore NFTs', 'My Listed NFTs', 'My NFTs'].map((item, i) => (
         <li
           key={i}
           onClick={() => {
             setActive(item);
 
             if (isMobile) setIsOpen(false);
+
+            if ((item === 'My Listed NFTs' || item === 'My NFTs') && session === '') {
+              alert.show('Please login first.');
+              setActive('Explore NFTs');
+            }
           }}
           className={`flex flex-row items-center font-roboto font-semibold text-base dark:hover:text-white hover:text-nft-dark mx-3
           ${active === item
             ? 'dark:text-white text-nft-black-1'
             : 'dark:text-nft-gray-3 text-nft-gray-2'} 
           ${isMobile && 'my-5 text-xl'}`}
-        >
-          <Link href={generateLink(i)}>{item}</Link>
+        >{(item === 'My Listed NFTs' || item === 'My NFTs') && session === ''
+          ? item
+          : <Link href={generateLink(i)}>{item}</Link>}
         </li>
       ))}
     </ul>
@@ -107,7 +118,7 @@ const checkActive = (active, setActive, router) => {
       if (active !== 'Explore NFTs') setActive('Explore NFTs');
       break;
     case '/created-nfts':
-      if (active !== 'Listed NFTs') setActive('Listed NFTs');
+      if (active !== 'My Listed NFTs') setActive('My Listed NFTs');
       break;
     case '/my-nfts':
       if (active !== 'My NFTs') setActive('My NFTs');

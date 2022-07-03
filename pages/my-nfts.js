@@ -1,4 +1,5 @@
 import { useEffect, useState, useContext } from 'react';
+import { useRouter } from 'next/router';
 import Image from 'next/image';
 
 import { NFTContext } from '../context/NFTContext';
@@ -15,6 +16,13 @@ const MyNFTs = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [activeSelect, setActiveSelect] = useState('Recently Added');
   const avatarImg = GetGravatarURL();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (session === '') {
+      router.push('/');
+    }
+  }, [session]);
 
   useEffect(() => {
     fetchMyNFTsOrCreatedNFTs('fetchMyNFTs')
@@ -72,7 +80,7 @@ const MyNFTs = () => {
     <div className="w-full flex justify-start items-center flex-col min-h-screen">
       <div className="w-full flexCenter flex-col">
         <Banner
-          name="Your Nifty NFTs"
+          name="NFTs Owned by You"
           childStyles="text-center mb-4"
           parentStyle="h-80 justify-center"
         />

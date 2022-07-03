@@ -21,14 +21,13 @@ export const TMDBProvider = ({ children }) => {
       const result = await response.json();
       const items = [result].map((tmdb) => {
         if (!tmdb.success) {
-          console.log(`Error in GetToken: ${tmdb.status_message}`);
+          alert(`Error in GetToken: ${tmdb.status_message}`);
           return [];
         }
         setExpiration(tmdb.expires_at);
         setRequestToken(tmdb.request_token);
         window.sessionStorage.setItem('expires', expires);
         window.sessionStorage.setItem('hasSession', false);
-        console.log('set token');
         return [{ expires, requestToken }];
       });
       return items;
@@ -40,7 +39,6 @@ export const TMDBProvider = ({ children }) => {
 
   const GetSessionURL = () => {
     if (requestToken === '') return '';
-    console.log('GetSessionURL');
     return (`https://www.themoviedb.org/authenticate/${requestToken}?redirect_to=http://localhost:3000/login-nfts`);
   };
 
@@ -51,14 +49,13 @@ export const TMDBProvider = ({ children }) => {
       const result = await response.json();
       setSession([result].map((tmdb) => {
         if (!tmdb.success) {
-          console.log(`Error in GetSession: ${tmdb.status_message}`);
+          alert(`Error in GetSession: ${tmdb.status_message}`);
           return '';
         }
         _session = tmdb.session_id;
         return tmdb.session_id;
       }));
       window.sessionStorage.setItem('hasSession', true);
-      console.log(`in GetSession _session: ${_session}`);
       return _session;
     } catch (error) {
       alert(error);
@@ -93,7 +90,6 @@ export const TMDBProvider = ({ children }) => {
       if (session !== '' && _session === '') _session = session;
       const response = await fetch(`https://api.themoviedb.org/3/account?api_key=b204a0381ec6e87c4459f4b9ad7759d2&session_id=${_session}`);
       const result = await response.json();
-      console.log(`results: ${JSON.stringify(result)}`);
       const user = [result].map((tmdb) => {
         setUserName(tmdb.username);
         setName(tmdb.name);
@@ -109,7 +105,6 @@ export const TMDBProvider = ({ children }) => {
 
   const GetGravatarURL = () => {
     if (gravatar === '') return;
-    console.log(`GetGravatarURL https://www.gravatar.com/avatar/${gravatar}?s=200`);
     return (`https://www.gravatar.com/avatar/${gravatar}?s=200`);
   };
 

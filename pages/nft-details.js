@@ -1,8 +1,10 @@
 import { useState, useEffect, useContext } from 'react';
+import { useAlert } from 'react-alert';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 
 import { NFTContext } from '../context/NFTContext';
+import { TMDBContext } from '../context/TMDBService';
 import { shortenAddress } from '../utils/shortenAddress';
 import { Button, Loader, Modal } from '../components';
 import images from '../assets';
@@ -39,11 +41,24 @@ const PaymentBodyCmp = ({ nft, nftCurrency }) => (
 
 const AssetDetails = () => {
   const { nftCurrency, buyNft, currentAccount, isLoadingNFT } = useContext(NFTContext);
+  const { session } = useContext(TMDBContext);
   const [nft, setNft] = useState({ image: '', itemId: '', name: '', owner: '', price: '', seller: '' });
   const [paymentModal, setPaymentModal] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+  const alert = useAlert();
+
+  useEffect(() => {
+    if (session === '') {
+      alert.show('Please login first.', {
+        type: 'error',
+        onClose: () => {
+          router.push('/');
+        },
+      });
+    }
+  }, [session]);
 
   useEffect(() => {
     // disable body scroll when navbar is open

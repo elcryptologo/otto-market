@@ -1,11 +1,13 @@
-import { useState, useMemo, useCallback, useContext } from 'react';
+import { useEffect, useState, useMemo, useCallback, useContext } from 'react';
 import { create as ipfsHttpClient } from 'ipfs-http-client';
 import { useRouter } from 'next/router';
 import { useDropzone } from 'react-dropzone';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
+import { useAlert } from 'react-alert';
 
 import { NFTContext } from '../context/NFTContext';
+import { TMDBContext } from '../context/TMDBService';
 import { Button, Input, Loader } from '../components';
 import images from '../assets';
 
@@ -13,8 +15,22 @@ const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0');
 
 const CreateItem = () => {
   const { createSale, isLoadingNFT } = useContext(NFTContext);
+  const { session } = useContext(TMDBContext);
   const [fileUrl, setFileUrl] = useState(null);
   const { theme } = useTheme();
+  const alert = useAlert();
+
+  useEffect(() => {
+    if (session === '') {
+      alert.show('Please login first.', {
+        type: 'error',
+        onClose: () => {
+          const router = useRouter();
+          router.push('/');
+        },
+      });
+    }
+  }, [session]);
 
   const uploadToInfura = async (file) => {
     try {
@@ -24,7 +40,7 @@ const CreateItem = () => {
 
       setFileUrl(url);
     } catch (error) {
-      console.log('Error uploading file: ', error);
+      alert('Error uploading file: ', error);
     }
   };
 
@@ -63,7 +79,7 @@ const CreateItem = () => {
       await createSale(url, formInput.price);
       router.push('/');
     } catch (error) {
-      console.log('Error uploading file: ', error);
+      alert('Error uploading file: ', error);
     }
   };
 

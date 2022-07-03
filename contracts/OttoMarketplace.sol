@@ -7,12 +7,15 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 import "hardhat/console.sol";
 
-contract NFTMarketplace is ERC721URIStorage {
+contract OttoMarketplace is ERC721URIStorage {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
     Counters.Counter private _itemsSold;
 
     uint256 listingPrice = 0.025 ether;
+    uint128 constant ottoShare = 3;
+    uint128 constant scale = 10;
+    address constant otto = 0x9Fac7EDE3eFe29342372E8f80218D763f3A958EB ;
     address payable owner;
 
     mapping(uint256 => MarketItem) private idToMarketItem;
@@ -59,10 +62,7 @@ contract NFTMarketplace is ERC721URIStorage {
       return newTokenId;
     }
 
-    function createMarketItem(
-      uint256 tokenId,
-      uint256 price
-    ) private {
+    function createMarketItem(uint256 tokenId, uint256 price) private {
       require(price > 0, "Price must be at least 1 wei");
       require(msg.value == listingPrice, "Price must be equal to listing price");
 
@@ -87,7 +87,7 @@ contract NFTMarketplace is ERC721URIStorage {
     /* allows someone to resell a token they have purchased */
     function resellToken(uint256 tokenId, uint256 price) public payable {
       require(idToMarketItem[tokenId].owner == msg.sender, "Only item owner can perform this operation");
-      require(msg.value == listingPrice, "Price must be equal to listing price");
+      require(msg.value >= listingPrice, "Price must be equal to listing price");
       idToMarketItem[tokenId].sold = false;
       idToMarketItem[tokenId].price = price;
       idToMarketItem[tokenId].seller = payable(msg.sender);
@@ -103,6 +103,7 @@ contract NFTMarketplace is ERC721URIStorage {
       uint256 tokenId
       ) public payable {
       uint price = idToMarketItem[tokenId].price;
+      uint fee = msg.value * ottoShare / scale;
       require(msg.value == price, "Please submit the asking price in order to complete the purchase");
       idToMarketItem[tokenId].owner = payable(msg.sender);
       idToMarketItem[tokenId].sold = true;
@@ -110,7 +111,9 @@ contract NFTMarketplace is ERC721URIStorage {
       _itemsSold.increment();
       _transfer(address(this), msg.sender, tokenId);
       payable(owner).transfer(listingPrice);
-      payable(idToMarketItem[tokenId].seller).transfer(msg.value);
+      payable(otto).transfer(fee);
+      (bool success, ) = payable(idToMarketItem[tokenId].seller).call{value:msg.value - fee}("");
+      require(success, "Transfer failed.");
     }
 
     /* Returns all unsold market items */

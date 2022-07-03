@@ -1,16 +1,31 @@
 import { useEffect, useState, useContext } from 'react';
 import { useRouter } from 'next/router';
+import { useAlert } from 'react-alert';
 import axios from 'axios';
 
 import { NFTContext } from '../context/NFTContext';
+import { TMDBContext } from '../context/TMDBService';
 import { Button, Input, Loader } from '../components';
 
 const ResellNFT = () => {
   const { createSale, isLoadingNFT } = useContext(NFTContext);
+  const { session } = useContext(TMDBContext);
+  const alert = useAlert();
   const [price, setPrice] = useState('');
   const [image, setImage] = useState('');
   const router = useRouter();
   const { id, tokenURI } = router.query;
+
+  useEffect(() => {
+    if (session === '') {
+      alert.show('Please login first.', {
+        type: 'error',
+        onClose: () => {
+          router.push('/');
+        },
+      });
+    }
+  }, [session]);
 
   const fetchNFT = async () => {
     if (!tokenURI) return;
