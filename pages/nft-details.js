@@ -41,13 +41,14 @@ const PaymentBodyCmp = ({ nft, nftCurrency }) => (
 
 const AssetDetails = () => {
   const { nftCurrency, buyNft, currentAccount, isLoadingNFT } = useContext(NFTContext);
-  const { session } = useContext(TMDBContext);
+  const { session, GetGravatarURL } = useContext(TMDBContext);
   const [nft, setNft] = useState({ image: '', itemId: '', name: '', owner: '', price: '', seller: '' });
   const [paymentModal, setPaymentModal] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   const alert = useAlert();
+  const avatarImg = GetGravatarURL();
 
   useEffect(() => {
     if (session === '') {
@@ -103,7 +104,9 @@ const AssetDetails = () => {
           <p className="font-roboto dark:text-white text-nft-black-1 text-xs minlg:text-base font-normal">Creator</p>
           <div className="flex flex-row items-center mt-3">
             <div className="relative w-12 h-12 minlg:w-20 minlg:h-20 mr-2">
-              <Image src={images.creator1} objectFit="cover" className="rounded-full" />
+              {currentAccount === nft.seller.toLowerCase()
+                ? <Image loader={() => avatarImg} width={200} height={200} src={avatarImg} objectFit="cover" className="rounded-full" />
+                : <Image src={images.creator1} objectFit="cover" className="rounded-full" />}
             </div>
             <p className="font-roboto dark:text-white text-nft-black-1 text-sm minlg:text-lg font-semibold">{shortenAddress(nft.seller)}</p>
           </div>

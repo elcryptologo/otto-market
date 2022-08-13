@@ -40,7 +40,13 @@ const CreateItem = () => {
 
       setFileUrl(url);
     } catch (error) {
-      alert('Error uploading file: ', error);
+      alert.show('Error uploading file: ', {
+        type: 'error',
+        onClose: () => {
+          const router = useRouter();
+          router.push('/');
+        },
+      });
     }
   };
 
@@ -79,7 +85,9 @@ const CreateItem = () => {
       await createSale(url, formInput.price);
       router.push('/');
     } catch (error) {
-      alert('Error uploading file: ', error);
+      alert.show('Error uploading file: ', {
+        type: 'error',
+      });
     }
   };
 
