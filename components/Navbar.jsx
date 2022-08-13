@@ -34,14 +34,12 @@ const MenuItems = ({ isMobile, active, setActive, setIsOpen }) => {
         <li
           key={i}
           onClick={() => {
-            setActive(item);
-
-            if (isMobile) setIsOpen(false);
-
             if ((item === 'My Listed NFTs' || item === 'My NFTs') && session === '') {
               alert.show('Please login first.');
               setActive('Explore NFTs');
             }
+            setActive(item);
+            if (isMobile) setIsOpen(false);
           }}
           className={`flex flex-row items-center font-roboto font-semibold text-base dark:hover:text-white hover:text-nft-dark mx-3
           ${active === item

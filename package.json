@@ -1,8 +1,11 @@
 {
-  "name": "polygon-next",
+  "name": "otto",
   "version": "0.1.0",
+  "homepage": "https://isla-mia.github.io/Otto",
   "private": true,
   "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -17,8 +20,8 @@
     "ipfs-http-client": "^56.0.1",
     "next": "12.1.0",
     "next-themes": "^0.1.1",
-    "query-string": "^7.1.1",
     "prop-types": "^15.6.2",
+    "query-string": "^7.1.1",
     "react": "17.0.2",
     "react-alert": "^7.0.3",
     "react-alert-template-basic": "^1.0.2",
@@ -40,6 +43,7 @@
     "eslint-plugin-react": "^7.30.0",
     "eslint-plugin-react-hooks": "^4.5.0",
     "ethereum-waffle": "^3.0.0",
+    "gh-pages": "^4.0.0",
     "postcss": "^8.4.7",
     "tailwindcss": "^3.0.23"
   }

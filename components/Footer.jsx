@@ -1,13 +1,15 @@
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
 
+import Link from 'next/link';
 import images from '../assets';
 import Button from './Button';
 
 const FooterLinks = ({ heading, items, extraClasses }) => (
   <div className={`flex-1 justify-start items-start ${extraClasses}`}>
     <h3 className="font-roboto dark:text-white text-nft-black-1 font-semibold text-xl mb-10">{heading}</h3>
-    {items.map((item, index) => <p key={item + index} className="font-roboto dark:text-white text-nft-black-1 font-normal text-base cursor-pointer dark:hover:text-nft-gray-1 hover:text-nft-black-1 my-3">{item}</p>)}
+    {items.map((item, index) => <p key={item + index} className="font-roboto dark:text-white text-nft-black-1 font-normal text-base cursor-pointer dark:hover:text-nft-gray-1 hover:text-nft-black-1 my-3">
+    {item === 'Explore' ? }</p>)}
   </div>
 );
 
@@ -46,9 +48,17 @@ const Footer = () => {
           <p className="font-roboto dark:text-white text-nft-black-1 font-semibold text-base">Otto, Inc. All Rights Reserved</p>
           <div className="flex flex-row sm:mt-4">
             {[images.instagram, images.twitter, images.telegram, images.discord].map((image, index) => (
-              <div className="mx-2 cursor-pointer" key={`image ${index}`}>
-                <Image src={image} key={index} objectFit="contain" width={24} height={24} alt="social" className={theme === 'light' ? 'filter invert' : undefined} />
-              </div>
+              <Link
+                href={image === images.instagram ? 'https://www.instagram.com/ottonftt/'
+                  : image === images.twitter ? 'https://twitter.com/ottonftt'
+                    : image === images.telegram ? 'https://t.me/ottonftt'
+                      : 'https://discord.com/invite/EfhD89Gy'}
+                target="_blank"
+              >
+                <div className="mx-2 cursor-pointer" key={`image ${index}`}>
+                  <Image src={image} key={index} objectFit="contain" width={24} height={24} alt="social" className={theme === 'light' ? 'filter invert' : undefined} />
+                </div>
+              </Link>
             ))}
           </div>
         </div>
