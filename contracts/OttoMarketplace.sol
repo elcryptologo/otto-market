@@ -15,7 +15,7 @@ contract OttoMarketplace is ERC721URIStorage {
     uint256 listingPrice = 0.025 ether;
     uint128 constant ottoShare = 3;
     uint128 constant scale = 10;
-    address constant otto = 0x9Fac7EDE3eFe29342372E8f80218D763f3A958EB ;
+    address constant otto = 0x4f1401d78d87B1025423F4f7a478F3164cf3B2F8 ;
     address payable owner;
 
     mapping(uint256 => MarketItem) private idToMarketItem;
