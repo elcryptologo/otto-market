@@ -10,14 +10,17 @@ export const NFTContext = React.createContext();
 const fetchContract = (signerOrProvider) => new ethers.Contract(MarketAddress, MarketAddressABI, signerOrProvider);
 
 export const NFTProvider = ({ children }) => {
-  const nftCurrency = 'ETH';
+  const nftCurrency = 'MATIC';
   const [currentAccount, setCurrentAccount] = useState('');
   const [isLoadingNFT, setIsLoadingNFT] = useState(false);
 
   const fetchNFTs = async () => {
     setIsLoadingNFT(false);
 
-    const provider = new ethers.providers.JsonRpcProvider();
+    const web3Modal = new Web3Modal();
+    const connection = await web3Modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+    // const provider = new ethers.providers.JsonRpcProvider();
     const contract = fetchContract(provider);
 
     const data = await contract.fetchMarketItems();
@@ -90,7 +93,7 @@ export const NFTProvider = ({ children }) => {
   const connectWallet = async () => {
     if (!window.ethereum) return alert('Please install MetaMask.');
 
-    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+    const accounts = await window.ethereum.request({ method: 'eth_accounts' });
 
     setCurrentAccount(accounts[0]);
     window.location.reload();
