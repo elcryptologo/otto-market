@@ -8,6 +8,15 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
+  }, 
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/isla-mia/otto.git"
+  },
+  "author": "Isla-Mia Blockchain Solutions",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/isla-mia/otto/issues"
   },
   "dependencies": {
     "@nomiclabs/hardhat-waffle": "^2.0.0",
