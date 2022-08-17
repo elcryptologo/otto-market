@@ -37,7 +37,7 @@ const CreateItem = () => {
       const added = await client.add({ content: file });
 
       const url = `https://ipfs.infura.io/ipfs/${added.path}`;
-
+      console.log(`url at uploadtoinfura: ${url}`);
       setFileUrl(url);
     } catch (error) {
       alert.show('Error uploading file: ', {
@@ -81,6 +81,7 @@ const CreateItem = () => {
     try {
       const added = await client.add(data);
       const url = `https://ipfs.infura.io/ipfs/${added.path}`;
+      console.log(url);
       /* after file is uploaded to IPFS, pass the URL to save it on Polygon */
       await createSale(url, formInput.price);
       router.push('/');
