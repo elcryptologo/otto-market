@@ -17,7 +17,6 @@ export const TMDBProvider = ({ children }) => {
   const GetToken = async () => {
     try {
       if (requestToken !== '' || expires.setHours(1) < Date.now) return [];
-      console.log(`test ${process.env.REACT_APP_TMDB_API_DOMAIN}`);
       const response = await fetch('https://api.themoviedb.org/3/authentication/token/new?api_key=b204a0381ec6e87c4459f4b9ad7759d2');
       const result = await response.json();
       const items = [result].map((tmdb) => {
