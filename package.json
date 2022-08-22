@@ -11,12 +11,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/isla-mia/otto.git"
+    "url": "git+https://github.com/isla-mia/ottomarket.git"
   },
   "author": "Isla-Mia Blockchain Solutions",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/isla-mia/otto/issues"
+    "url": "https://github.com/isla-mia/ottomarket/issues"
   },
   "dependencies": {
     "@azure/identity": "^2.1.0",
