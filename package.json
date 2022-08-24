@@ -1,5 +1,5 @@
 {
-  "name": "ottomarket",
+  "name": "otto-market",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -11,12 +11,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/isla-mia/ottomarket.git"
+    "url": "git+https://github.com/otto-nft/otto-market.git"
   },
   "author": "Isla-Mia Blockchain Solutions",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/isla-mia/ottomarket/issues"
+    "url": "https://github.com/otto-nft/otto-market/issues"
   },
   "dependencies": {
     "@azure/identity": "^2.1.0",
