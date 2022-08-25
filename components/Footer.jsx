@@ -12,9 +12,9 @@ const FooterLinks = ({ heading, items, extraClasses }) => (
     {items.map((item, index) => (
       <a
         href={item === columnLinks[0] ? '/'
-          : item === columnLinks[1] ? 'https://www.ottonft.com/'
-            : 'https://www.ottonft.com/#team'}
-        target={item === columnLinks[0] ? '_self' : '_blank'}
+          : item === columnLinks[1] ? '/howto'
+            : 'howto#team'}
+        target="_self"
         rel="noopener noreferrer"
       >
         <p key={item + index} className="font-roboto dark:text-white text-nft-black-1 font-normal text-base cursor-pointer dark:hover:text-nft-gray-1 hover:text-nft-black-1 my-3">{item}</p>

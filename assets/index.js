@@ -40,6 +40,28 @@ import headerbg from './headerbg.png';
 import loader from './loader.gif';
 import arrow from './arrow.png';
 
+import advisor from './advisor.png';
+import ceo from './CEO.png';
+import ciltv from './cil_tv.png';
+import cmo from './CMO.png';
+import group from './Group.png';
+import mario from './mario_ayala_188.png';
+import mariocanvas from './mario_ayala_canvas.png';
+import medium from './medium.png';
+import modelv21T1 from './Model_V2_1_T 1.png';
+import modelv21t2 from './Model_V2_1_T 2.png';
+import modelv21tmob from './Model_V2_1_T_mob.png';
+import nftv11 from './NFT_V1 1.png';
+import nftv22 from './NFT_V2 2.png';
+import nftv34 from './NFT_V3 4.png';
+import nftv42 from './NFT_V4 2.png';
+import nftv52 from './NFT_V5 2.png';
+import opensea from './opensea.png';
+import rocket from './ph_rocket-launch.png';
+import v501t1 from './V5_01_T 1.png';
+import v501t2 from './V5_01_T 2.png';
+import v501tmob from './V5_01_T_mob.png';
+
 export default {
   heartOutline,
   heart,
@@ -82,4 +104,25 @@ export default {
   headerbg,
   loader,
   arrow,
+  advisor,
+  ceo,
+  ciltv,
+  cmo,
+  group,
+  mario,
+  mariocanvas,
+  medium,
+  modelv21T1,
+  modelv21t2,
+  modelv21tmob,
+  nftv11,
+  nftv22,
+  nftv34,
+  nftv42,
+  nftv52,
+  opensea,
+  rocket,
+  v501t1,
+  v501t2,
+  v501tmob,
 };

@@ -122,3 +122,898 @@
         opacity: 1;
     }
 }
+
+:root{
+	--white: #ffffff;
+	--light-white: rgba(255, 255, 255, 0.5);
+	--bg-black: #000000;
+	--menu-grey: #A0A0A0;
+	--purple: #8446E5;
+	--desc-grey: #9D9B9B;
+	--title-grey: #848484;
+	--title-light-grey:rgba(132, 132, 132, 0.5);
+	--btn-black: #272727;
+	--btn-border-grey: #626262;
+}
+
+*,*:after,*:before{
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	text-decoration: none;
+	outline: none;
+	list-style: none;
+}
+.h1{
+	font-size: 144px;
+}
+.h2{
+	font-size: 96px;
+}
+.h3{
+	font-size: 36px;
+}
+.h4{
+	font-size: 72px;
+}
+.h5{
+	color: var(--btn-black);
+	font-size: 24px;
+}
+.h6{
+	font-size: 12px;
+}
+.t1{
+	font-size: 24px;
+}
+.t2{
+	font-size: 36px;
+}
+.t3{
+	font-size: 48px;
+}
+.t4{
+	font-size: 32px;
+}
+.t5{    
+	color: var(--btn-black);
+	font-size: 13px;
+}
+
+
+body{
+	font-family: 'Roboto', sans-serif;
+}
+
+html{
+	scroll-behavior: smooth;
+}
+img{
+	width: 100%;
+}
+.container{
+	padding: 0 60px;
+}
+
+/*========NavBar=======*/
+
+.otto_content{
+	background-image: url(../public/Long_Dark_purple.png);
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+.navbar .navbar_inner{
+	display: flex;
+	justify-content: space-between;
+}
+.navbar .navbar_inner a{
+	font-weight: 700;
+	color: var(--bg-black);
+}
+.otto_menu li{
+	display: inline-block;
+}
+.navbar .navbar_inner .otto_menu li a{
+	padding: 0px 10px;
+	color: var(--menu-grey);
+	font-size: 24px;
+	font-weight: 700;
+	 display: block;
+	 text-align: center;
+}
+.navbar .navbar_inner .otto_menu li a:hover{
+	color: var(--white);
+	transition: .3s all ease-in-out;
+}
+.otto_menu{
+	display: flex;
+	align-items: center;
+	position: relative;
+	z-index: 9;
+}
+
+
+/*======Hero Section========*/
+.otto_content .navbar{
+	position: relative;
+}
+.hero_defi{
+	padding: 30px 0 0;
+	display: flex;
+	width: 100%;
+}
+.hero_defi .hero_title{
+	width: 52%;
+}
+.hero_defi .hero_title h1{
+	color: var(--white);
+	text-transform: capitalize;
+	font-size: 58px;
+	padding-top: 70px;
+
+}
+.hero_defi .hero_title p{
+
+	font-weight: 300;
+	line-height: 28px;
+	letter-spacing: 0em;
+	text-align: left;
+	color: var(--desc-grey);
+	padding-top: 24px;
+
+}
+.hero_defi .hero_title h1 span{
+	color: var(--purple);
+}
+.hero_defi .hero_image{
+	width: 48%;
+    margin-top: -153px;
+    -o-transform: translate(60px,10px);
+    -ms-transform: translate(60px,10px);
+    -webkit-transform: translate(60px,10px);
+    transform: translate(60px,10px);
+}
+.mob_img{
+	display: none;
+}
+
+/*====== What is otto ========*/
+
+.what_otto{
+	padding: 250px 0 270px;
+}
+.what_otto_title h2{
+	color: var(--title-grey);
+	font-weight: 700;
+	text-transform: capitalize;
+
+}
+.what_otto_title span{
+	font-weight: 700;
+	color: var(--purple);
+}
+.what_otto_title p{
+	color: var(--white);
+	font-weight: 300;
+
+}
+
+
+/*===== How it works =======*/
+
+
+.how_works{
+	padding: 50px 0 80px;
+}
+.how_works{
+	height: 1130px;
+}
+.how_works .works_title{
+	text-align: center;
+}
+.how_work_list{
+	width: 100%;
+    max-width: 820px;
+    margin: 0px auto;
+
+}
+.how_works .works_title h2{
+	padding-bottom: 65px;
+	color: var(--title-grey)
+}
+.how_works .nft_work_text h4{
+	font-weight: 300;
+	color: var(--purple);
+}
+.how_works .nft_work_text p{
+	font-weight: 300;
+	color: var(--white);
+}
+.how_work_list .nft_work {
+	display: flex;
+	padding-bottom: 20px;
+}
+.how_work_list .nft_work_img{
+	padding-right: 22px;
+}
+.how_work_list .nft_work_img img{
+	width: 85px;
+}
+
+.how_works_img {
+    -o-transform: translate(80px,-770px);
+    -ms-transform: translate(80px,-770px);
+    -webkit-transform: translate(80px,-770px);
+    transform: translate(80px,-770px);
+    margin-top: -30px;
+    width: 500px;
+    margin-left: auto;
+}
+.how_works_img img{
+	height: 100%;
+}
+.nft_whitepaper{
+	text-align: center;
+	padding-top: 60px;
+	position: relative;
+	z-index: 999999;
+}
+.nft_whitepaper a{
+	color: var(--btn-black);
+	display: inline-block;
+	padding: 32px;
+	border-radius: 20px;
+	border: 3px solid var(--btn-border-grey);
+	background-color: var(--title-grey);
+	text-transform: uppercase;
+	font-weight: 700;
+}
+.nft_whitepaper a:hover{
+	background-color: var(--white);
+	transition: .3s all ease-in-out;
+}
+
+
+/*=====Mint NFT=======*/
+
+.mint_nft{
+	padding:50px 40px 110px;
+}
+.mint_nft_title{
+	padding: 0 45px;	
+}
+.mint_nft_title h2{
+	color: var(--purple);
+	font-weight: 700;
+}
+.mint_nft_title h2 span{
+	color: var(--title-grey);
+	text-transform: uppercase;
+}
+.mint_nft_title p{
+	color: var(--white);
+	font-weight: 300;
+}
+.mint_nft_img{
+	display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(105px,1fr));
+    gap: 20px;
+    padding-top: 28px;
+}
+.mint_table_main .responsive-table{
+	padding-top: 22px;
+}
+.mint_table_main .responsive-table li {
+	 border-radius: 3px;
+	 display: flex;
+	 padding: 5px 0;
+	 text-align: center;
+}
+.mint_table_main .responsive-table .table-header {
+	 color: var(--light-white);
+	 border-bottom: 6px solid var(--title-light-grey);
+	 border-radius: 0px;
+}
+.mint_table_main .responsive-table .table-row {
+	 color: #fff;
+	 border-bottom: 6px solid var(--title-light-grey);
+	 border-radius: 0px;
+}
+.mint_table_main .responsive-table .col-0{
+	 color: var(--light-white);
+}
+.mint_table_main .responsive-table .col-1 {
+	 flex-basis: 18%;
+}
+.mint_table_main .responsive-table .col-2 {
+	 flex-basis: 23%;
+}
+.mint_table_main .responsive-table .col-3 {
+	 flex-basis: 17%;
+}
+.mint_table_main .responsive-table .col-4 {
+	 flex-basis: 25%;
+}
+.mint_table_main .responsive-table .col-5 {
+	 flex-basis: 16%;
+}
+.mint_table_main .responsive-table .col-1-0 {
+	 flex-basis: 14%;
+}
+.mint_table_main .responsive-table .col-2-0 {
+	 flex-basis: 25%;
+}
+.mint_table_main .responsive-table .col-3-0 {
+	 flex-basis: 17%;
+}
+.mint_table_main .responsive-table .col-4-0 {
+	 flex-basis: 24%;
+}
+.mint_table_main .responsive-table .col-5-0 {
+	 flex-basis: 17%;
+}
+.min_opensea{
+	text-align: center;
+	margin-top: 30px;
+}
+.min_opensea a{
+	display: inline-block;
+}
+.min_opensea a img{
+	width: 240px;
+	margin: 0px auto;
+}
+
+
+/*=====Punch line ======*/
+
+.punch_line{
+	padding: 250px 0;
+}
+.punch_line .punch_content{
+	display: flex;
+}
+.punch_line .punch_content h2{
+	color: var(--purple);
+}
+.punch_line .punch_content h4{
+	padding-top: 40px;
+	color: var(--title-grey);
+}
+
+/*======Road Map ======*/
+
+.road_map{
+	padding: 200px 0;
+}
+
+.road_map .road_map_content{
+	display: flex;
+}
+.road_map_path{
+	padding-top: 30px;
+}
+.road_map_title h2{
+	color: var(--title-grey);
+	font-weight: 700;
+}
+.road_map_title .road_map_path li{
+	color: var(--white);
+	font-weight: 300;
+}
+.road_map_img{
+	margin-top: -85px;
+}
+
+/*===== Team =======*/
+
+.team{
+	padding: 100px 0 70px;
+}
+.team .team_title{
+	padding-bottom: 300px;
+}
+.team_title h2{
+	text-align: center;
+	color: var(--title-grey);
+}
+.team_box{
+	display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(310px,310px));
+    gap: 50px;
+    justify-content: center;
+    padding-bottom: 150px;
+}
+.team_box_content{
+	background-color: var(--white);
+	padding: 15px 15px 6px;
+	border-radius: 30px;
+}
+.box_img{
+	position: relative;
+	text-align: center;
+}
+.box_img:before{
+	position: absolute;
+	content: '';
+	top: 0;
+	left: 15.5%;
+	width: 184px;
+	height: 184px;
+	background: #C4C4C4;
+	border-radius: 100%;
+}
+.box_img img{
+	width: 219px;
+	position: relative;
+}
+.box_img.cbd img{
+	width: 206px;
+}
+.box_img.cmo img{
+	width: 206px;
+}
+.box_img.advisor img{
+	width: 206px;
+}
+.box_title{
+	text-align: center;
+}
+.box_title h5,.box_title h6{
+	font-weight: 700;
+}
+.box_title h6{
+	color: var(--title-grey);
+	padding-bottom: 6px;
+}
+.box_title p{
+	min-height: 70px;
+	max-height: 70px;
+	font-weight: 300;
+}
+.box_title .box_icon a{
+	color: var(--bg-black)
+}
+.box_title .box_icon i{
+	font-size: 50px;
+}
+.otto_connect h3{
+	text-align: center;
+	color: var(--title-grey);
+	text-transform: uppercase;
+	text-shadow: 0px 4px 4px #000000;
+}
+.otto_connect .connect_icons{
+	display: flex;
+	justify-content: center;
+	padding-top: 22px;
+}
+.otto_connect .connect_icons a{
+	padding: 0px 50px;
+}
+
+
+
+/*Media Queries*/
+
+
+@media(min-width: 1400px){
+	.container {
+	    padding: 0 100px;
+	}
+	.hero_defi .hero_image {
+	    -o-transform: translate(100px,10px);
+	    -ms-transform: translate(100px,10px);
+	    -webkit-transform: translate(100px,10px);
+	    transform: translate(100px,10px);
+	}
+	.what_otto {
+	    padding: 300px 0px;
+	}
+	.how_works_img {
+	    -o-transform: translate(100px,-790px);
+	    -ms-transform: translate(100px,-790px);
+	    -webkit-transform: translate(100px,-790px);
+	    transform: translate(100px,-790px);
+	}
+	.min_opensea a img {
+	    width: 300px;
+	}
+	.punch_line{
+		padding: 350px 0;
+	}
+	.road_map {
+	    padding: 200px 0 130px;
+	}
+	.h6,.t5 {
+	    font-size: 16px;
+	}
+	.box_title p {
+	    min-height: 110px;
+	    max-height: 110px;
+	}
+	.punch_line .punch_content h4 {
+	    padding-top: 66px;
+	}
+
+}
+@media(min-width: 1900px){
+	.mint_table_main .responsive-table .col-1-0 {
+	    flex-basis: 14%;
+	}
+	.table-row.t1,.table-header.t1{
+		font-size: 32px;
+	}
+	.min_opensea a img {
+	    width: 340px;
+	}
+}
+@media(max-width: 1399px){
+	.container {
+	    padding: 0 80px;
+	}
+	.hero_defi .hero_image {
+	    margin-top: -115px;
+	    -o-transform: translate(80px,10px);
+	    -ms-transform: translate(80px,10px);
+	    -webkit-transform: translate(80px,10px);
+	    transform: translate(80px,10px);
+	}
+	.h1 {
+	    font-size: 95px;
+	}
+	.h2 {
+	    font-size: 64px;
+	}
+	.h3 {
+	    font-size: 30px;
+	}
+	.h4 {
+	    font-size: 52px;
+	}
+	.navbar .navbar_inner .otto_menu li a {
+	    font-size: 18px;
+	}
+	.hero_defi .hero_title p{
+		padding-top: 10px; 
+	}
+	.hero_defi .hero_title h1{
+		font-size: 50px;
+	}
+	.t1 {
+	    font-size: 20px;
+	}
+	.t2,.t4 {
+	    font-size: 22px;
+	}
+	.t3 {
+	    font-size: 34px;
+	}
+	.how_works {
+	    height: 850px;
+	}
+	.nft_whitepaper a{
+		padding: 24px 40px;
+	}
+	.how_work_list .nft_work_img img {
+	    width: 62px;
+	}
+	.how_work_list {
+	    max-width: 620px;
+	    margin: 0px auto;
+	}
+	.road_map_title{
+		width: 100%;
+	}
+	.connect_icons img{
+		width: 50px;
+	}
+}
+@media(max-width: 1199px){
+	.navbar .navbar_inner .otto_menu li a {
+	    font-size: 16px;
+	}
+	.hero_defi .hero_title h1 {
+	    font-size: 42px;
+	}
+	.t1 {
+	    font-size: 18px;
+	}
+	.t2, .t4 {
+	    font-size: 20px;
+	}
+	.h3 {
+	    font-size: 26px;
+	}
+	.t3 {
+	    font-size: 28px;
+	}
+	.h4 {
+	    font-size: 45px;
+	}
+	.box_title .box_icon i {
+	    font-size: 42px;
+	}
+	.connect_icons img {
+	    width: 42px;
+	}
+	.team .team_title {
+	    padding-bottom: 170px;
+	}
+	.road_map {
+	    padding: 100px 0;
+	}
+	.punch_line {
+	    padding: 200px 0;
+	}
+	.how_works_img {
+	    -o-transform: translate(80px,-630px);
+	    -ms-transform: translate(80px,-630px);
+	    -webkit-transform: translate(80px,-630px);
+	    transform: translate(80px,-630px);
+	    width: 400px;
+	}
+	.team_box {
+	    grid-template-columns: repeat(auto-fit,minmax(254px,254px));
+	    gap: 35px;
+	}
+	.box_img:before {
+	    left: 14.5%;
+	    width: 160px;
+	    height: 160px;
+	}
+	.box_img img {
+	    width: 187px;
+	}
+	.box_img.cmo img,.box_img.advisor img {
+	    width: 179px;
+	}
+	.box_title p{
+		min-height: 80px;
+		max-height: 80px;
+	}
+}
+@media(max-width: 991px){
+	.hero_defi {
+	    display: inherit;
+	    height: 900px;
+	}
+	.hero_defi .hero_title h1{
+		padding-top: 150px;
+	}
+	.hero_defi .hero_title,.hero_defi .hero_image{
+		width: 100%;
+	}
+	.hero_defi .hero_image img{
+		width: 500px;
+	}
+	.hero_defi .hero_image {
+		text-align: right;
+	    margin-top: -115px;
+	    -o-transform: translate(80px,-300px);
+	    -ms-transform: translate(80px,-300px);
+	    -webkit-transform: translate(80px,-300px);
+	     transform: translate(80px,-300px); 
+	}
+	.what_otto {
+	    padding: 0px 0 270px;
+	}
+	.mint_nft {
+	    padding: 50px 0px 110px;
+	}
+	.punch_line .punch_content{
+		display: inherit;
+	}
+	.punch_line .punch_content h2 {
+	    line-height: 74px;
+	}
+	.punch_line .punch_content h4{
+		padding: 0;
+	}
+	.road_map_img {
+	    margin-top: -52px;
+	}
+	.road_map_title .road_map_path li{
+		list-style-type: disc;
+	}
+	.road_map .road_map_content {
+	    flex-direction: column-reverse;
+	}
+	.road_map_img{
+		-o-transform: translate(-195px,-98px);
+		-ms-transform: translate(-195px,-98px);
+		-webkit-transform: translate(-195px,-98px);
+		transform: translate(-195px,-98px);
+	}
+	.road_map_img img{
+		width: 400px;
+	}
+}
+@media (max-width: 991px){
+	.hero_defi .hero_image {
+	    margin-top: -217px;
+	}
+}
+@media (max-width: 767px) {
+	.mint_nft_img,.mint_table_main{
+		display: none;
+	}
+	.min_opensea {
+	    margin-top: 70px;
+	}
+	.container {
+	    padding: 0 60px;
+	}
+	.box_img img {
+	    width: 190px;
+	}
+	.box_img:before{
+		left: 18.5%;
+		width: 160px;
+		height: 160px;
+	}
+	.box_img.cmo img,.box_img.advisor img {
+	    width: 175px;
+	}
+	.box_title p {
+	    min-height: 96px;
+	    max-height: 96px;
+	}
+	.how_works_img {
+	    -o-transform: translate(60px,-630px);
+	    -ms-transform: translate(60px,-630px);
+	    -webkit-transform: translate(60px,-630px);
+	    transform: translate(60px,-630px);
+	}
+	.hero_defi .hero_image {
+	    -o-transform: translate(60px,-300px);
+	    -ms-transform: translate(60px,-300px);
+	    -webkit-transform: translate(60px,-300px);
+	    transform: translate(60px,-300px);
+	}
+	.road_map {
+	    padding: 100px 0 40px;
+	}
+	.otto_connect .connect_icons a {
+	    padding: 0px 20px;
+	}
+	.connect_icons img {
+	    width: 38px;
+	}
+
+}
+@media(max-width: 620px){
+	.h1 {
+	    font-size: 65px;
+	}
+	.navbar .navbar_inner .otto_menu li a {
+	    font-size: 12px;
+	}
+	.hero_defi .hero_title h1 {
+	    font-size: 35px;
+	}
+	.navbar .navbar_inner {
+	    padding: 30px 0;
+	}
+	.desktop_img{
+		display: none;
+	}
+	.mob_img{
+		display: block;
+	}
+	.hero_defi .hero_image img {
+	     width: 100%; 
+	}
+	.how_work_list .nft_work_img{
+		display: none;
+	}
+	.mint_nft_title {
+	     padding: 0px; 
+	}
+	.road_map_title h2 {
+	    text-align: center;
+	}
+	.how_works_img{
+		-o-transform: translate(60px,-730px);
+	    -ms-transform: translate(60px,-730px);
+	    -webkit-transform: translate(60px,-730px);
+	    transform: translate(60px,-730px);
+		width: 100%;
+	}
+
+}
+@media(max-width: 475px){
+	.h1 {
+	    font-size: 48px;
+	}
+	.hero_defi .hero_title h1 {
+	    font-size: 30px;
+	}
+	.t1 {
+	    font-size: 22px;
+	}
+	.what_otto {
+	    padding: 100px 0 285px;
+	}
+	.what_otto_title span {
+	    font-size: 96px;
+	}
+	.what_otto_title h2 {
+	    line-height: 70px;
+	}
+	.what_otto_title p {
+	    padding-top: 16px;
+	}
+	.h3 {
+	    font-size: 24px;
+	}
+	.how_works .nft_work_text p {
+	    font-size: 18px;
+	}
+	.t3 {
+	    font-size: 24px;
+	}
+	.mint_nft_title h2 {
+	    color: var(--purple);
+	    font-size: 72px;
+	}
+	.mint_nft_title h2 span{
+	    font-size: 48px;
+
+	}
+	.punch_line .punch_content h2 {
+	    font-size: 144px;
+	}
+	.punch_line .punch_content h4 {
+	    padding: 32px 0px;
+	    font-size: 48px;
+	}
+	.h5 {
+	    font-size: 20px;
+	}
+	.otto_connect .connect_icons a {
+	    padding: 0px 10px;
+	}
+	.road_map_img{
+		margin-top: -100px;
+	}
+}
+@media(max-width: 400px){
+	.container {
+	    padding: 0 20px;
+	}
+	.navbar .navbar_inner {
+	    flex-direction: column;
+	}
+	.otto_menu {
+	    justify-content: center;
+	}
+	.navbar .navbar_inner a{
+		text-align: center;
+	}
+	.otto_menu {
+	    padding-top: 24px;
+	}
+	.hero_defi {
+	    height: 630px;
+	}
+	.hero_defi .hero_title h1 {
+	    padding-top: 60px;
+	}
+	.what_otto {
+	    padding: 100px 0 200px;
+	}
+	.hero_defi .hero_image {
+	    -o-transform: translate(20px,-300px);
+	    -ms-transform: translate(20px,-300px);
+	    -webkit-transform: translate(20px,-300px);
+	    transform: translate(20px,-300px);
+	}
+	.how_works_img {
+	    -o-transform: translate(20px,-730px);
+	    -ms-transform: translate(20px,-730px);
+	    -webkit-transform: translate(20px,-730px);
+	    transform: translate(20px,-730px);
+	    width: 100%;
+	}
+}
