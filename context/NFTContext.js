@@ -10,7 +10,7 @@ export const NFTContext = React.createContext();
 const fetchContract = (signerOrProvider) => new ethers.Contract(MarketAddress, MarketAddressABI, signerOrProvider);
 
 export const NFTProvider = ({ children }) => {
-  const nftCurrency = 'ETH';
+  const nftCurrency = 'MATIC';
   const [currentAccount, setCurrentAccount] = useState('');
   const [isLoadingNFT, setIsLoadingNFT] = useState(false);
 

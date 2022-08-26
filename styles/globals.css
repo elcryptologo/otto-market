@@ -188,9 +188,6 @@ body{
 html{
 	scroll-behavior: smooth;
 }
-img{
-	width: 100%;
-}
 .container{
 	padding: 0 60px;
 }
