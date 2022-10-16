@@ -9,6 +9,7 @@ import { Loader, NFTCard, SearchBar, Banner } from '../components';
 import images from '../assets';
 
 const MyNFTs = () => {
+  const router = useRouter();
   const { fetchMyNFTsOrCreatedNFTs, currentAccount } = useContext(NFTContext);
   const { session, userName, GetGravatarURL } = useContext(TMDBContext);
   const [nfts, setNfts] = useState([]);
@@ -16,7 +17,6 @@ const MyNFTs = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [activeSelect, setActiveSelect] = useState('Recently Added');
   const avatarImg = GetGravatarURL();
-  const router = useRouter();
 
   useEffect(() => {
     if (session === '') {
@@ -35,6 +35,8 @@ const MyNFTs = () => {
 
   useEffect(() => {
     const sortedNfts = [...nfts];
+
+    document.body.style.overflow = 'visible';
 
     switch (activeSelect) {
       case 'Price (low to high)':
@@ -105,7 +107,7 @@ const MyNFTs = () => {
             <SearchBar activeSelect={activeSelect} setActiveSelect={setActiveSelect} handleSearch={onHandleSearch} clearSearch={onClearSearch} />
           </div>
           <div className="mt-3 w-full flex flex-wrap">
-            {nfts.map((nft) => <NFTCard key={`nft-${nft.tokenId}`} nft={nft} onProfilePage />)}
+            {nfts.map((nft) => <NFTCard key={`nft-${nft.tokenSeller}`} nft={nft} onProfilePage />)}
           </div>
         </div>
       )}

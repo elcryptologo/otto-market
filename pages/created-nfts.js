@@ -71,7 +71,7 @@ const CreatorDashboard = () => {
       <div className="sm:px-4 p-12 w-full minmd:w-4/5 flexStart flex-col">
         <h2 className="font-roboto dark:text-white text-nft-black-1 text-2xl justify-start mt-2 ml-4 sm:ml-2 font-semibold">NFTs You Have Listed for Sale</h2>
         <div className="mt-3 w-full flex flex-wrap justify-start md:justify-center">
-          {nfts.map((nft) => <NFTCard key={`nft-${nft.tokenId}`} nft={nft} />)}
+          {nfts.map((nft) => <NFTCard key={`nft-${nft.tokenSeller}`} nft={nft} />)}
         </div>
       </div>
     </div>

@@ -1,20 +1,33 @@
 import { useEffect, useState, useContext } from 'react';
+import { create as ipfsHttpClient } from 'ipfs-http-client';
 import { useRouter } from 'next/router';
 import { useAlert } from 'react-alert';
 import axios from 'axios';
 
 import { NFTContext } from '../context/NFTContext';
 import { TMDBContext } from '../context/TMDBService';
-import { Button, Input, Loader } from '../components';
+import { auth } from '../context/constants';
+import { Button, Loader } from '../components';
 
 const ResellNFT = () => {
-  const { createSale, isLoadingNFT } = useContext(NFTContext);
+  const { resellToken, isLoadingNFT, nftCurrency } = useContext(NFTContext);
   const { session } = useContext(TMDBContext);
   const alert = useAlert();
-  const [price, setPrice] = useState('');
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
   const [image, setImage] = useState('');
   const router = useRouter();
-  const { id, tokenURI } = router.query;
+  const { id, tokenURI, amount, price } = router.query;
+
+  const client = ipfsHttpClient({
+    host: 'ipfs.infura.io',
+    port: 5001,
+    protocol: 'https',
+    apiPath: 'api/v0',
+    headers: {
+      authorization: auth,
+    },
+  });
 
   useEffect(() => {
     if (session === '') {
@@ -32,8 +45,9 @@ const ResellNFT = () => {
 
     const { data } = await axios.get(tokenURI);
 
-    setPrice(data.price);
+    setName(data.name);
     setImage(data.image);
+    setDescription(data.description);
   };
 
   useEffect(() => {
@@ -41,7 +55,18 @@ const ResellNFT = () => {
   }, [id]);
 
   const resell = async () => {
-    await createSale(tokenURI, price, true, id);
+    if (!name || !description || !price || !image) {
+      console.log(`name: ${name} desc: ${description} price: ${price}`);
+      return;
+    }
+
+    const data = JSON.stringify({ name, description, price, image });
+    const added = await client.add(data);
+    const url = `https://otto.infura-ipfs.io/ipfs/${added.path}`;
+
+    console.log('before resellToken in resell in resell-nft');
+    await resellToken(id, url, price);
+    console.log('after resellToken in resell in resell-nft');
 
     router.push('/');
   };
@@ -57,18 +82,30 @@ const ResellNFT = () => {
   return (
     <div className="flex justify-center sm:px-4 p-12">
       <div className="w-3/5 md:w-full">
-        <h1 className="font-roboto dark:text-white text-nft-black-1 font-semibold text-2xl">Resell NFT</h1>
-
-        <Input
-          inputType="number"
-          title="Price"
-          placeholder="Asset Price"
-          handleClick={(e) => setPrice(e.target.value)}
-        />
+        <h1 className="font-roboto dark:text-white text-nft-black-1 font-semibold text-4xl">Resell NFT</h1>
+        <div className="flex flex-row sm:flex-col">
+          <h2 className="font-roboto dark:text-white text-nft-black-1 font-bold text-2xl minlg:text-3xl">{name}</h2>
+        </div>
+        <div className="mt-3">
+          <p className="font-roboto dark:text-white text-nft-black-1 font-normal text-base">
+            {description}
+          </p>
+        </div>
+        <div className="mt-3">
+          <p className="font-roboto dark:text-white text-nft-black-1 font-normal text-base">
+            Listing {amount} token{amount > 1 ? 's' : ''} at {price} {nftCurrency}
+          </p>
+        </div>
 
         {image && <img className="rounded mt-4" width="350" src={image} />}
 
-        <div className="mt-7 w-full flex justify-end">
+        <div className="mt-7 flex flex-none grid-cols-2 gap-40 justify-start sm:flex-col">
+          <Button
+            btnName="Cancel"
+            btnType="outline"
+            classStyles="rounded-lg"
+            handleClick={() => router.push('/my-nfts')}
+          />
           <Button
             btnName="List NFT"
             btnType="primary"

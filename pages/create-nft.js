@@ -8,12 +8,10 @@ import { useAlert } from 'react-alert';
 
 import { NFTContext } from '../context/NFTContext';
 import { TMDBContext } from '../context/TMDBService';
+import { auth } from '../context/constants';
 import { Button, Input, Loader } from '../components';
 import images from '../assets';
 
-const projectId = '2DVKDKJperqMtzMq8ySOCR24ZV4';
-const projectSecret = '6994f75ec6434bd9edefced739874118';
-const auth = `Basic ${Buffer.from(`${projectId}:${projectSecret}`).toString('base64')}`;
 const client = ipfsHttpClient({
   host: 'ipfs.infura.io',
   port: 5001,
@@ -26,7 +24,7 @@ const client = ipfsHttpClient({
 // const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0');
 
 const CreateItem = () => {
-  const { createSale, isLoadingNFT } = useContext(NFTContext);
+  const { createToken, isLoadingNFT } = useContext(NFTContext);
   const { session } = useContext(TMDBContext);
   const [fileUrl, setFileUrl] = useState(null);
   const { theme } = useTheme();
@@ -81,20 +79,19 @@ const CreateItem = () => {
     [isDragActive, isDragReject, isDragAccept],
   );
 
-  const [formInput, updateFormInput] = useState({ price: '', name: '', description: '' });
+  const [formInput, updateFormInput] = useState({ price: '', amount: '', name: '', description: '' });
   const router = useRouter();
 
   const createMarket = async () => {
-    const { name, description, price } = formInput;
-    if (!name || !description || !price || !fileUrl) return;
+    const { price, amount, name, description } = formInput;
+    if (!name || !description || !price || !amount || !fileUrl) return;
     /* first, upload to IPFS */
-    const data = JSON.stringify({ name, description, image: fileUrl });
+    const data = JSON.stringify({ name, description, price, amount, image: fileUrl });
     try {
       const added = await client.add(data);
       const url = `https://otto.infura-ipfs.io/ipfs/${added.path}`;
-      console.log(url);
       /* after file is uploaded to IPFS, pass the URL to save it on Polygon */
-      await createSale(url, formInput.price);
+      await createToken(url, formInput.price, formInput.amount);
       router.push('/');
     } catch (error) {
       alert.show('Error uploading file: ', {
@@ -171,6 +168,13 @@ const CreateItem = () => {
           title="Price"
           placeholder="Asset Price"
           handleClick={(e) => updateFormInput({ ...formInput, price: e.target.value })}
+        />
+
+        <Input
+          inputType="amount"
+          title="Amount"
+          placeholder="NFT Amount"
+          handleClick={(e) => updateFormInput({ ...formInput, amount: e.target.value })}
         />
 
         <div className="mt-7 w-full flex justify-end">

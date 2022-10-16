@@ -113,6 +113,13 @@
     align-items: flex-start;
 }
 
+.flexBottomStart {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+	align-content: flex-end;
+}
+
 @keyframes fadeIn {
     from {
         opacity: 0;

@@ -80,6 +80,7 @@ const LoginButtonGroup = ({ router }) => {
       classStyles="mx-2 rounded-lg"
       handleClick={async () => {
         await DeleteSession();
+        router.push('/');
       }}
     />
   );
