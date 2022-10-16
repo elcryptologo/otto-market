@@ -8,31 +8,34 @@ import { MarketAddress, MarketAddressABI } from './constants';
 export const NFTContext = React.createContext();
 
 const fetchContract = (signerOrProvider) => new ethers.Contract(MarketAddress, MarketAddressABI, signerOrProvider);
+const isApprovedForAll = async (signerOrProvider) => fetchContract.isApprovedForAll(signerOrProvider, MarketAddress);
 
 export const NFTProvider = ({ children }) => {
-  const nftCurrency = 'MATIC';
+  const nftCurrency = 'ETH';
   const [currentAccount, setCurrentAccount] = useState('');
   const [isLoadingNFT, setIsLoadingNFT] = useState(false);
 
   const fetchNFTs = async () => {
     setIsLoadingNFT(false);
 
+    if (!isApprovedForAll) fetchContract.setApprovalForAll(MarketAddress, true);
+
     const web3Modal = new Web3Modal();
     const connection = await web3Modal.connect();
-    const provider = new ethers.providers.Web3Provider(connection);
-    // const provider = new ethers.providers.JsonRpcProvider();
+    const provider = new ethers.providers.Web3Provider(connection); // const provider = new ethers.providers.JsonRpcProvider();
     const contract = fetchContract(provider);
 
+    console.log('before fetchMarketItems in fetchNFTs in NFTContext');
     const data = await contract.fetchMarketItems();
+    // const data = await contract.fetchAllItems();
+    console.log(`after fetchMarketItems in fetchNFTs in NFTContext ${data.length}`);
 
-    const items = await Promise.all(data.map(async ({ tokenId, seller, owner, price: unformattedPrice }) => {
-      const tokenURI = await contract.tokenURI(tokenId);
+    const items = await Promise.all(data.map(async ({ tokenSeller, tokenId, seller, owner, price: unformattedPrice, amount, sold }) => {
+      const tokenURI = await contract.tokenURI(tokenSeller);
       const { data: { image, name, description } } = await axios.get(tokenURI);
       const price = ethers.utils.formatUnits(unformattedPrice.toString(), 'ether');
-
-      return { price, tokenId: tokenId.toNumber(), id: tokenId.toNumber(), seller, owner, image, name, description, tokenURI };
+      return { price, tokenId: tokenId.toNumber(), tokenSeller: tokenSeller.toString(), amount: amount.toNumber(), sold: sold.toNumber(), seller, owner, image, name, description, tokenURI };
     }));
-
     return items;
   };
 
@@ -45,21 +48,36 @@ export const NFTProvider = ({ children }) => {
     const signer = provider.getSigner();
 
     const contract = fetchContract(signer);
-    const data = type === 'fetchItemsListed' ? await contract.fetchItemsListed() : await contract.fetchMyNFTs();
+    const data = (type === 'fetchItemsListed') ? await contract.fetchItemsListed() : await contract.fetchMyNFTs();
 
-    const items = await Promise.all(data.map(async ({ tokenId, seller, owner, price: unformattedPrice }) => {
-      const tokenURI = await contract.tokenURI(tokenId);
+    const items = await Promise.all(data.map(async ({ tokenSeller, tokenId, seller, owner, price: unformattedPrice, amount, sold }) => {
+      const tokenURI = await contract.tokenURI(tokenSeller);
       const { data: { image, name, description } } = await axios.get(tokenURI);
       const price = ethers.utils.formatUnits(unformattedPrice.toString(), 'ether');
-
-      return { price, tokenId: tokenId.toNumber(), seller, owner, image, name, description, tokenURI };
+      return { price, tokenId: tokenId.toNumber(), tokenSeller: tokenSeller.toString(), amount: amount.toNumber(), sold: sold.toNumber(), seller, owner, image, name, description, tokenURI };
     }));
 
     return items;
   };
 
-  const createSale = async (url, formInputPrice, isReselling, id) => {
-    console.log(`url at createSale: ${url}`);
+  const createToken = async (url, formInputPrice, formInputAmount) => {
+    const web3Modal = new Web3Modal();
+    const connection = await web3Modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+
+    const price = ethers.utils.parseUnits(formInputPrice, 'ether');
+    const amount = parseInt(formInputAmount, 10);
+    const contract = fetchContract(signer);
+    const listingPrice = await contract.getListingPrice();
+
+    const transaction = await contract.createToken(url, price, amount, { value: listingPrice.toString() });
+
+    setIsLoadingNFT(true);
+    await transaction.wait();
+  };
+
+  const resellToken = async (id, url, formInputPrice) => {
     const web3Modal = new Web3Modal();
     const connection = await web3Modal.connect();
     const provider = new ethers.providers.Web3Provider(connection);
@@ -68,24 +86,27 @@ export const NFTProvider = ({ children }) => {
     const price = ethers.utils.parseUnits(formInputPrice, 'ether');
     const contract = fetchContract(signer);
     const listingPrice = await contract.getListingPrice();
-
-    const transaction = !isReselling
-      ? await contract.createToken(url, price, { value: listingPrice.toString() })
-      : await contract.resellToken(id, price, { value: listingPrice.toString() });
+    console.log(`in resellToken in NFTContext before resellToken url: ${url}`);
+    const transaction = await contract.resellToken(id, url, price, { value: listingPrice.toString() });
 
     setIsLoadingNFT(true);
     await transaction.wait();
   };
 
-  const buyNft = async (nft) => {
+  const buyNft = async (nft, formInputAmount) => {
     const web3Modal = new Web3Modal();
     const connection = await web3Modal.connect();
     const provider = new ethers.providers.Web3Provider(connection);
     const signer = provider.getSigner();
     const contract = new ethers.Contract(MarketAddress, MarketAddressABI, signer);
 
-    const price = ethers.utils.parseUnits(nft.price.toString(), 'ether');
-    const transaction = await contract.createMarketSale(nft.tokenId, { value: price });
+    const amount = parseInt(formInputAmount, 10);
+    const price = ethers.utils.parseUnits((nft.price * amount).toString(), 'ether');
+
+    console.log('In NFTContext in buyNft before createMarketSale');
+    const transaction = await contract.createMarketSale(nft.tokenSeller, amount, { value: price });
+    console.log('In NFTContext in buyNft after createMarketSale');
+
     setIsLoadingNFT(true);
     await transaction.wait();
     setIsLoadingNFT(false);
@@ -117,7 +138,7 @@ export const NFTProvider = ({ children }) => {
   }, []);
 
   return (
-    <NFTContext.Provider value={{ nftCurrency, buyNft, createSale, fetchNFTs, fetchMyNFTsOrCreatedNFTs, connectWallet, currentAccount, isLoadingNFT }}>
+    <NFTContext.Provider value={{ nftCurrency, buyNft, createToken, resellToken, fetchNFTs, fetchMyNFTsOrCreatedNFTs, connectWallet, currentAccount, isLoadingNFT }}>
       {children}
     </NFTContext.Provider>
   );

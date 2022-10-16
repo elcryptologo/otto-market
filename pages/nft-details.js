@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useRef } from 'react';
 import { useAlert } from 'react-alert';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
@@ -6,25 +6,30 @@ import Image from 'next/image';
 import { NFTContext } from '../context/NFTContext';
 import { TMDBContext } from '../context/TMDBService';
 import { shortenAddress } from '../utils/shortenAddress';
-import { Button, Loader, Modal } from '../components';
+import { Button, Loader, Input, Modal } from '../components';
 import images from '../assets';
 
-const PaymentBodyCmp = ({ nft, nftCurrency }) => (
+const PaymentBodyCmp = ({ nft, nftCurrency, amount }) => (
   <div className="flex flex-col">
     <div className="flexBetween">
       <p className="font-roboto dark:text-white text-nft-black-1 font-semibold text-base minlg:text-xl">Item</p>
-      <p className="font-roboto dark:text-white text-nft-black-1 font-semibold text-base minlg:text-xl">Subtotal</p>
+      <p className="font-roboto dark:text-white text-nft-black-1 font-semibold text-base minlg:text-xl">Amount</p>
+      <p className="font-roboto dark:text-white text-nft-black-1 font-semibold text-base minlg:text-xl">Each</p>
     </div>
 
     <div className="flexBetweenStart my-5">
-      <div className="flex-1 flexStartCenter">
+      <div className="flex-col flexStartCenter">
         <div className="relative w-28 h-28">
           <img src={nft.image || images[`nft${nft.i}`]} layout="fill" objectFit="cover" />
         </div>
-        <div className="flexCenterStart flex-col ml-5">
+        <div className="flexStartCenter content-end mt-2 flex-col">
           <p className="font-roboto dark:text-white text-nft-black-1 font-semibold text-sm minlg:text-xl">{shortenAddress(nft.seller)}</p>
           <p className="font-roboto dark:text-white text-nft-black-1 text-sm minlg:text-xl font-normal">{nft.name}</p>
         </div>
+      </div>
+
+      <div>
+        <p className="font-roboto dark:text-white text-nft-black-1 text-sm minlg:text-xl font-normal">{amount} </p>
       </div>
 
       <div>
@@ -34,7 +39,7 @@ const PaymentBodyCmp = ({ nft, nftCurrency }) => (
 
     <div className="flexBetween mt-10">
       <p className="font-roboto dark:text-white text-nft-black-1 font-semibold text-base minlg:text-xl">Total</p>
-      <p className="font-roboto dark:text-white text-nft-black-1 text-base minlg:text-xl font-normal">{nft.price} <span className="font-semibold">{nftCurrency}</span></p>
+      <p className="font-roboto dark:text-white text-nft-black-1 text-base minlg:text-xl font-normal">{parseFloat(nft.price * amount).toFixed(1)} <span className="font-semibold">{nftCurrency}</span></p>
     </div>
   </div>
 );
@@ -42,10 +47,12 @@ const PaymentBodyCmp = ({ nft, nftCurrency }) => (
 const AssetDetails = () => {
   const { nftCurrency, buyNft, currentAccount, isLoadingNFT } = useContext(NFTContext);
   const { session, GetGravatarURL } = useContext(TMDBContext);
-  const [nft, setNft] = useState({ image: '', itemId: '', name: '', owner: '', price: '', seller: '' });
+  const [nft, setNft] = useState({ image: '', itemId: '', tokenSeller: '', name: '', owner: '', price: '', amount: '', sold: '', seller: '' });
   const [paymentModal, setPaymentModal] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const amountRef = useRef(null);
+  const priceRef = useRef(null);
   const router = useRouter();
   const alert = useAlert();
   const avatarImg = GetGravatarURL();
@@ -78,11 +85,21 @@ const AssetDetails = () => {
     setIsLoading(false);
   }, [router.isReady]);
 
+  const [formInput, updateFormInput] = useState({ amount: '', price: '' });
+
   const checkout = async () => {
-    await buyNft(nft);
+    await buyNft(nft, formInput.amount);
 
     setPaymentModal(false);
     setSuccessModal(true);
+  };
+
+  const focusAmount = () => {
+    amountRef.current.focus();
+  };
+
+  const focusPrice = () => {
+    priceRef.current.focus();
   };
 
   if (isLoading) return <Loader />;
@@ -97,29 +114,56 @@ const AssetDetails = () => {
 
       <div className="flex-1 justify-start sm:px-4 p-12 sm:pb-4">
         <div className="flex flex-row sm:flex-col">
-          <h2 className="font-roboto dark:text-white text-nft-black-1 font-semibold text-2xl minlg:text-3xl">{nft.name}</h2>
+          <h2 className="font-roboto dark:text-white text-nft-black-1 font-bold text-2xl minlg:text-3xl">{nft.name}</h2>
         </div>
 
-        <div className="mt-10">
+        <div className="mt-3">
           <p className="font-roboto dark:text-white text-nft-black-1 text-xs minlg:text-base font-normal">Creator</p>
           <div className="flex flex-row items-center mt-3">
             <div className="relative w-12 h-12 minlg:w-20 minlg:h-20 mr-2">
-              {currentAccount === nft.seller.toLowerCase()
+              {currentAccount === nft.seller.toLowerCase() || currentAccount === nft.owner.toLowerCase()
                 ? <img loader={() => avatarImg} width={200} height={200} src={avatarImg} objectFit="cover" className="rounded-full" />
                 : <Image src={images.creator1} objectFit="cover" className="rounded-full" />}
             </div>
-            <p className="font-roboto dark:text-white text-nft-black-1 text-sm minlg:text-lg font-semibold">{shortenAddress(nft.seller)}</p>
+            <p className="font-roboto dark:text-white text-nft-black-1 text-sm minlg:text-lg font-semibold">
+              {shortenAddress((currentAccount === nft.seller.toLowerCase()) ? nft.seller : nft.owner)}
+            </p>
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col">
+        <div className="mt-7 flex flex-col">
           <div className="w-full border-b dark:border-nft-black-1 border-nft-gray-1 flex flex-row">
-            <p className="font-roboto dark:text-white text-nft-black-1 font-medium text-base mb-2">Details</p>
+            <p className="font-roboto dark:text-white text-nft-black-1 font-semibold text-2xl mb-2">Details</p>
           </div>
-          <div className="mt-3">
+          <div className="mt-2">
             <p className="font-roboto dark:text-white text-nft-black-1 font-normal text-base">
               {nft.description}
             </p>
+          </div>
+          <div className="mt-2">
+            <p className="font-roboto dark:text-white text-nft-black-1 font-normal text-base">Listing {nft.amount} minted tokens. </p>
+          </div>
+          <div className="">
+            {(currentAccount !== nft.owner.toLowerCase())
+              ? (
+                <Input
+                  refName={amountRef}
+                  inputType="amount"
+                  title="Amount of Tokens"
+                  placeholder="NFT Amount"
+                  handleClick={(e) => updateFormInput({ ...formInput, amount: e.target.value })}
+                />
+              ) : ''}
+            {(currentAccount === nft.owner.toLowerCase())
+              ? (
+                <Input
+                  refName={priceRef}
+                  inputType="number"
+                  title="Price per Token"
+                  placeholder="NFT Price"
+                  handleClick={(e) => updateFormInput({ ...formInput, price: e.target.value })}
+                />
+              ) : ''}
           </div>
         </div>
         <div className="flex flex-row sm:flex-col mt-10">
@@ -135,15 +179,27 @@ const AssetDetails = () => {
                   btnName="List on Marketplace"
                   btnType="primary"
                   classStyles="mr-5 sm:mr-0 sm:mb-5 rounded-xl"
-                  handleClick={() => router.push(`/resell-nft?id=${nft.tokenId}&tokenURI=${nft.tokenURI}`)}
+                  handleClick={() => {
+                    if (formInput.price <= 0) {
+                      alert.error('Invalid price.');
+                      focusPrice();
+                    } else router.push(`/resell-nft?id=${nft.tokenSeller}&tokenURI=${nft.tokenURI}&amount=${nft.amount}&price=${formInput.price}`);
+                  }}
                 />
               )
               : (
                 <Button
-                  btnName={`Buy for ${nft.price} ${nftCurrency}`}
+                  btnName={`Buy ${(nft.amount > 1) ? 'each' : ''} for ${nft.price} ${nftCurrency}`}
                   btnType="primary"
                   classStyles="mr-5 sm:mr-0 sm:mb-5 rounded-xl"
-                  handleClick={() => setPaymentModal(true)}
+                  handleClick={() => {
+                    if (formInput.amount > nft.amount || formInput.amount <= 0) {
+                      alert.error('Invalid amount.');
+                      focusAmount();
+                      return;
+                    }
+                    setPaymentModal(true);
+                  }}
                 />
               )}
         </div>
@@ -152,7 +208,7 @@ const AssetDetails = () => {
       {paymentModal && (
         <Modal
           header="Check Out"
-          body={<PaymentBodyCmp nft={nft} nftCurrency={nftCurrency} />}
+          body={<PaymentBodyCmp nft={nft} nftCurrency={nftCurrency} amount={formInput.amount} />}
           footer={(
             <div className="flex flex-row sm:flex-col">
               <Button
