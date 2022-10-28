@@ -41,10 +41,18 @@ module.exports = {
     },
     mainnet: {
       chainId: 137,
-      url: 'https://polygon-rpc.com',
+      url: 'https://rpc.ankr.com/polygon',
       accounts: [privateKey],
     },
   },
-  solidity: '0.8.4',
+  solidity: {
+    version: '0.8.4',
+    settings: {
+      optimizer: {
+        enabled: true,
+        runs: 1000,
+      },
+    },
+  },
 };
 

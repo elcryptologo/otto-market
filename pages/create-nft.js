@@ -29,6 +29,8 @@ const CreateItem = () => {
   const [fileUrl, setFileUrl] = useState(null);
   const { theme } = useTheme();
   const alert = useAlert();
+  const minRoyalty = 0;
+  const maxRoyalty = 50;
 
   useEffect(() => {
     if (session === '') {
@@ -79,19 +81,19 @@ const CreateItem = () => {
     [isDragActive, isDragReject, isDragAccept],
   );
 
-  const [formInput, updateFormInput] = useState({ price: '', amount: '', name: '', description: '' });
+  const [formInput, updateFormInput] = useState({ price: '', amount: '', royalties: '', name: '', description: '' });
   const router = useRouter();
 
   const createMarket = async () => {
-    const { price, amount, name, description } = formInput;
-    if (!name || !description || !price || !amount || !fileUrl) return;
+    const { price, amount, royalties, name, description } = formInput;
+    if (!name || !description || !price || !amount || royalties || !fileUrl) return;
     /* first, upload to IPFS */
     const data = JSON.stringify({ name, description, price, amount, image: fileUrl });
     try {
       const added = await client.add(data);
       const url = `https://otto.infura-ipfs.io/ipfs/${added.path}`;
       /* after file is uploaded to IPFS, pass the URL to save it on Polygon */
-      await createToken(url, formInput.price, formInput.amount);
+      await createToken(url, formInput.price, formInput.amount, formInput.royalties);
       router.push('/');
     } catch (error) {
       alert.show('Error uploading file: ', {
@@ -175,6 +177,13 @@ const CreateItem = () => {
           title="Amount"
           placeholder="NFT Amount"
           handleClick={(e) => updateFormInput({ ...formInput, amount: e.target.value })}
+        />
+
+        <Input
+          input="royalties"
+          title="Royalties"
+          placeholder="Royalties"
+          handleClick={(e) => updateFormInput({ ...formInput, royalties: Math.max(minRoyalty, Math.min(maxRoyalty, Number(e.target.value))) })}
         />
 
         <div className="mt-7 w-full flex justify-end">
