@@ -19,16 +19,15 @@ export const NFTProvider = ({ children }) => {
     setIsLoadingNFT(false);
 
     if (!isApprovedForAll) fetchContract.setApprovalForAll(MarketAddress, true);
-
     const web3Modal = new Web3Modal();
     const connection = await web3Modal.connect();
     const provider = new ethers.providers.Web3Provider(connection); // const provider = new ethers.providers.JsonRpcProvider();
     const contract = fetchContract(provider);
 
-    console.log('before fetchMarketItems in fetchNFTs in NFTContext');
-    const data = await contract.fetchMarketItems();
-    // const data = await contract.fetchAllItems();
-    console.log(`after fetchMarketItems in fetchNFTs in NFTContext ${data.length}`);
+    console.log('before getMarketItems in fetchNFTs in NFTContext');
+    const data = await contract.getMarketItems();
+    // const data = await contract.getAllItems();
+    console.log(`after getMarketItems in fetchNFTs in NFTContext ${data.length}`);
 
     const items = await Promise.all(data.map(async ({ tokenSeller, tokenId, seller, owner, price: unformattedPrice, amount, sold }) => {
       const tokenURI = await contract.tokenURI(tokenSeller);
@@ -42,13 +41,17 @@ export const NFTProvider = ({ children }) => {
   const fetchMyNFTsOrCreatedNFTs = async (type) => {
     setIsLoadingNFT(false);
 
+    if (!isApprovedForAll) fetchContract.setApprovalForAll(MarketAddress, true);
     const web3Modal = new Web3Modal();
     const connection = await web3Modal.connect();
     const provider = new ethers.providers.Web3Provider(connection);
     const signer = provider.getSigner();
 
     const contract = fetchContract(signer);
-    const data = (type === 'fetchItemsListed') ? await contract.fetchItemsListed() : await contract.fetchMyNFTs();
+
+    console.log(`before getItemsListed and getMyNFT: ${type}`);
+    const data = (type === 'fetchItemsListed') ? await contract.getItemsListed() : await contract.getMyNFTs();
+    console.log(`after getItemsListed and getMyNFT: ${type}`);
 
     const items = await Promise.all(data.map(async ({ tokenSeller, tokenId, seller, owner, price: unformattedPrice, amount, sold }) => {
       const tokenURI = await contract.tokenURI(tokenSeller);
@@ -60,7 +63,7 @@ export const NFTProvider = ({ children }) => {
     return items;
   };
 
-  const createToken = async (url, formInputPrice, formInputAmount) => {
+  const createToken = async (url, formInputPrice, formInputAmount, formInputRoyalties) => {
     const web3Modal = new Web3Modal();
     const connection = await web3Modal.connect();
     const provider = new ethers.providers.Web3Provider(connection);
@@ -68,10 +71,11 @@ export const NFTProvider = ({ children }) => {
 
     const price = ethers.utils.parseUnits(formInputPrice, 'ether');
     const amount = parseInt(formInputAmount, 10);
+    const royalties = parseInt(formInputRoyalties, 10);
     const contract = fetchContract(signer);
     const listingPrice = await contract.getListingPrice();
 
-    const transaction = await contract.createToken(url, price, amount, { value: listingPrice.toString() });
+    const transaction = await contract.createToken(url, price, amount, royalties, { value: listingPrice.toString() });
 
     setIsLoadingNFT(true);
     await transaction.wait();
