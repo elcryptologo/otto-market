@@ -19,6 +19,7 @@ module.exports = {
     },
     settings: {
       url: 'http://localhost:3000',
+      gasPrice: 20000000000,
       optimizer: {
         enabled: true,
         runs: 200,

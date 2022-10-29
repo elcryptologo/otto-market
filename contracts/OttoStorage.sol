@@ -5,8 +5,9 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
 import "./Allowable.sol";
+import "./IOttoMarketplace.sol";
 
-contract OttoStorage is Ownable { 
+contract OttoStorage is Ownable, IOttoMarketplace { 
     Allowable access;
 
     constructor(address _allowable) {
@@ -96,17 +97,6 @@ contract OttoStorage is Ownable {
         return tokenSellers;
     }
 
-    // Market Items
-    struct MarketItem {
-      bytes32 tokenSeller;
-      uint256 tokenId;
-      address payable seller;
-      address payable owner;
-      uint256 price;
-      uint256 amount;
-      uint256 sold;
-    }
-
     function newMarketItem(
       bytes32 _tokenSeller, 
       uint256 _tokenId, 
@@ -134,35 +124,13 @@ contract OttoStorage is Ownable {
         marketItems[_seller] = _item;
     }
 
-    function getMarketItem (bytes32 _sellerId) public view isAllowed returns (
-        uint256 _tokenId, 
-        address payable _seller,
-        address payable _owner, 
-        uint256 _price, 
-        uint256 _amount, 
-        uint256 _sold
-      )
+    function getMarketItem (bytes32 _sellerId) public view isAllowed returns (MarketItem memory _item)
     {
-      return (
-        marketItems[_sellerId].tokenId,
-        marketItems[_sellerId].seller,
-        marketItems[_sellerId].owner,
-        marketItems[_sellerId].price,
-        marketItems[_sellerId].amount,
-        marketItems[_sellerId].sold
-      );
+      return (marketItems[_sellerId]);
     }
 
     /* Returns all unsold market items */
-    function fetchAllItems() public  view isAllowed returns (
-        bytes32[] memory _tokenSeller, 
-        uint256[] memory _tokenId, 
-        address[] memory _seller, 
-        address[]  memory _owner, 
-        uint256[] memory _price, 
-        uint256[] memory _amount, 
-        uint256[] memory _sold
-      ) 
+    function fetchAllItems() public view isAllowed returns (MarketItem[] memory _items) 
     {
       uint256 currentIndex = 0;
       uint256 totalTokens = 0;
@@ -171,47 +139,19 @@ contract OttoStorage is Ownable {
         totalTokens += 1;
       }
 
-      _tokenSeller = new bytes32[](totalTokens);
-      _tokenId = new uint256[](totalTokens);
-      _seller = new address[](totalTokens);
-      _owner = new address[](totalTokens);
-      _price = new uint256[](totalTokens);
-      _amount = new uint256[](totalTokens);
-      _sold = new uint256[](totalTokens);
+      _items = new MarketItem[](totalTokens);
       
       for (uint i = 0; i < totalTokens; i++) {
         MarketItem storage currentItem = marketItems[tokenSellers[i]];
 
-        _tokenSeller[currentIndex] = currentItem.tokenSeller;
-        _tokenId[currentIndex] = currentItem.tokenId;
-        _seller[currentIndex] = currentItem.seller;
-        _owner[currentIndex] = currentItem.owner;
-        _price[currentIndex] = currentItem.price;
-        _amount[currentIndex] = currentItem.amount;
-        _sold[currentIndex] = currentItem.sold;
-
+          _items[currentIndex] = currentItem;
         currentIndex += 1;
       }
-      return (_tokenSeller,
-        _tokenId,
-        _seller,
-        _owner,
-        _price,
-        _amount,
-        _sold
-      );
+      return (_items);
     }
 
     /* Returns all unsold market items */
-    function fetchMarketItems(address market) public view isAllowed returns (
-        bytes32[] memory _tokenSeller, 
-        uint256[] memory _tokenId, 
-        address[] memory _seller, 
-        address[]  memory _owner, 
-        uint256[] memory _price, 
-        uint256[] memory _amount, 
-        uint256[] memory _sold
-      ) 
+    function fetchMarketItems(address market) public view isAllowed returns (MarketItem[] memory _items) 
     {
       uint256 currentIndex = 0;
       uint256 totalTokens = 0;
@@ -222,50 +162,23 @@ contract OttoStorage is Ownable {
         }
       }
 
-      _tokenSeller = new bytes32[](totalTokens);
-      _tokenId = new uint256[](totalTokens);
-      _seller = new address[](totalTokens);
-      _owner = new address[](totalTokens);
-      _price = new uint256[](totalTokens);
-      _amount = new uint256[](totalTokens);
-      _sold = new uint256[](totalTokens);
+      _items = new MarketItem[](totalTokens);
 
       for (uint i = 0; i < tokenSellers.length; i++) {
         if (marketItems[tokenSellers[i]].owner == market) {
           MarketItem storage currentItem = marketItems[tokenSellers[i]];
 
-          _tokenSeller[currentIndex] = currentItem.tokenSeller;
-          _tokenId[currentIndex] = currentItem.tokenId;
-          _seller[currentIndex] = currentItem.seller;
-          _owner[currentIndex] = currentItem.owner;
-          _price[currentIndex] = currentItem.price;
-          _amount[currentIndex] = currentItem.amount;
-          _sold[currentIndex] = currentItem.sold;
+          _items[currentIndex] = currentItem;
 
           currentIndex += 1;
         }
       }
 
-      return (_tokenSeller,
-        _tokenId,
-        _seller,
-        _owner,
-        _price,
-        _amount,
-        _sold
-      );
+      return (_items);
     }
 
     /* Returns only items that a user has purchased */
-    function fetchMyNFTs(address sender) public view isAllowed returns (
-        bytes32[] memory _tokenSeller, 
-        uint256[] memory _tokenId, 
-        address[] memory _seller, 
-        address[]  memory _owner, 
-        uint256[] memory _price, 
-        uint256[] memory _amount, 
-        uint256[] memory _sold
-      ) 
+    function fetchMyNFTs(address sender) public view isAllowed returns (MarketItem[] memory _items) 
     {
       uint totalTokens = 0;
       uint currentIndex = 0;
@@ -276,51 +189,23 @@ contract OttoStorage is Ownable {
         }
       }
 
-      _tokenSeller = new bytes32[](totalTokens);
-      _tokenId = new uint256[](totalTokens);
-      _seller = new address[](totalTokens);
-      _owner = new address[](totalTokens);
-      _price = new uint256[](totalTokens);
-      _amount = new uint256[](totalTokens);
-      _sold = new uint256[](totalTokens);
+      _items = new MarketItem[](totalTokens);
 
       for (uint i = 0; i < tokenSellers.length; i++) {
         if (marketItems[tokenSellers[i]].owner == sender) {
           MarketItem storage currentItem = marketItems[tokenSellers[i]];
 
-          _tokenSeller[currentIndex] = currentItem.tokenSeller;
-          _tokenId[currentIndex] = currentItem.tokenId;
-          _seller[currentIndex] = currentItem.seller;
-          _owner[currentIndex] = currentItem.owner;
-          _price[currentIndex] = currentItem.price;
-          _amount[currentIndex] = currentItem.amount;
-          _sold[currentIndex] = currentItem.sold;
+          _items[currentIndex] = currentItem;
 
           currentIndex += 1;
         }
       }
 
-      return (
-        _tokenSeller,
-        _tokenId,
-        _seller,
-        _owner,
-        _price,
-        _amount,
-        _sold
-      );
+      return (_items);
     }
 
     /* Returns only items a user has listed */
-    function fetchItemsListed(address sender) public view isAllowed returns (
-        bytes32[] memory _tokenSeller, 
-        uint256[] memory _tokenId, 
-        address[] memory _seller, 
-        address[]  memory _owner, 
-        uint256[] memory _price, 
-        uint256[] memory _amount, 
-        uint256[] memory _sold
-      ) 
+    function fetchItemsListed(address sender) public view isAllowed returns (MarketItem[] memory _items) 
     {
       uint totalTokens = 0;
       uint currentIndex = 0;
@@ -331,37 +216,17 @@ contract OttoStorage is Ownable {
         }
       }
 
-      _tokenSeller = new bytes32[](totalTokens);
-      _tokenId = new uint256[](totalTokens);
-      _seller = new address[](totalTokens);
-      _owner = new address[](totalTokens);
-      _price = new uint256[](totalTokens);
-      _amount = new uint256[](totalTokens);
-      _sold = new uint256[](totalTokens);
+      _items = new MarketItem[](totalTokens);
 
       for (uint i = 0; i < tokenSellers.length; i++) {
         if (marketItems[tokenSellers[i]].seller == sender && marketItems[tokenSellers[i]].sold < marketItems[tokenSellers[i]].amount) {
           MarketItem storage currentItem = marketItems[tokenSellers[i]];
 
-          _tokenSeller[currentIndex] = currentItem.tokenSeller;
-          _tokenId[currentIndex] = currentItem.tokenId;
-          _seller[currentIndex] = currentItem.seller;
-          _owner[currentIndex] = currentItem.owner;
-          _price[currentIndex] = currentItem.price;
-          _amount[currentIndex] = currentItem.amount;
-          _sold[currentIndex] = currentItem.sold;
+          _items[currentIndex] = currentItem;
 
           currentIndex += 1;
         }
       }
-      return (
-        _tokenSeller,
-        _tokenId,
-        _seller,
-        _owner,
-        _price,
-        _amount,
-        _sold
-      );
+      return (_items);
     }
 }

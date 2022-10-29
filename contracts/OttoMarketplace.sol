@@ -10,20 +10,11 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 
 import "./OttoStorage.sol";
 import "./OttoRoyalty.sol";
+import "./IOttoMarketplace.sol";
 
-contract OttoMarketplace is Ownable, ERC1155, IERC1155Receiver, ReentrancyGuard {
+contract OttoMarketplace is IOttoMarketplace, Ownable, ERC1155, IERC1155Receiver, ReentrancyGuard {
     OttoStorage db;
     OttoRoyalty royalty;
-
-    struct MarketItem {
-      bytes32 tokenSeller;
-      uint256 tokenId;
-      address payable seller;
-      address payable owner;
-      uint256 price;
-      uint256 amount;
-      uint256 sold;
-    }
 
     event MarketItemCreated (
       bytes32 indexed tokenSeller,
@@ -38,7 +29,7 @@ contract OttoMarketplace is Ownable, ERC1155, IERC1155Receiver, ReentrancyGuard 
     constructor(address _ottoStorage, address _ottoRoyalty) ERC1155("Otto Marketplace") {  
       db = OttoStorage(_ottoStorage);
       royalty = OttoRoyalty(_ottoRoyalty);
-      royalty.setDefaultRoyalty(address(this), 0);
+      //royalty.setDefaultRoyalty(address(this), 0);
     }
       
     function onERC1155Received(
@@ -129,18 +120,18 @@ contract OttoMarketplace is Ownable, ERC1155, IERC1155Receiver, ReentrancyGuard 
       require(_price > 0, "Price must be at least 1 wei");
       require(_amount > 0, "Amount must be greater than 0");
       
-      (uint256 tokenId, , , , , ) = db.getMarketItem(_tokenSeller);
-      require(tokenId > 0, "Invalid token.");     
+      MarketItem memory item = db.getMarketItem(_tokenSeller);
+      require(item.tokenId > 0, "Invalid token.");     
 
-       (uint256 newTokenId, , , , , ) = db.getMarketItem(_newTokenSeller);
-      require(newTokenId == 0, "Reseller already registered");
+      MarketItem memory newItem = db.getMarketItem(_newTokenSeller);
+      require(newItem.tokenId == 0, "Reseller already registered");
 
       db.addTokenSeller(_newTokenSeller);
       db.setTokenUri(_newTokenSeller, db.getTokenUri(_tokenSeller));
 
       db.setMarketItem(_newTokenSeller, db.newMarketItem(
         _newTokenSeller,
-        tokenId,
+        item.tokenId,
         payable(address(0)),
         payable(msg.sender),
         _price,
@@ -155,76 +146,50 @@ contract OttoMarketplace is Ownable, ERC1155, IERC1155Receiver, ReentrancyGuard 
     function createMarketSale(bytes32 _tokenSeller, uint256 _amount) public payable nonReentrant {
       require(_amount > 0, "Invalid amount.");
 
-      (uint256 tokenId, 
-        address payable seller, 
-        address payable owner,
-        uint256 price, 
-        uint256 amount, 
-        uint256 sold) = db.getMarketItem(_tokenSeller);
+      MarketItem memory item = db.getMarketItem(_tokenSeller);
 
-      require( tokenId > 0, "Invalid tokenId.");
-      require(_amount <= amount - sold, "Cannot buy more than the available amount.");
-      require(msg.value == price * _amount, "Please submit the asking price in order to complete the purchase");
+      require( item.tokenId > 0, "Invalid tokenId.");
+      require(_amount <= item.amount - item.sold, "Cannot buy more than the available amount.");
+      require(msg.value == item.price * _amount, "Please submit the asking price in order to complete the purchase");
 
       uint fee = msg.value * db.getOttoShare() / royalty.feeDenominator();
       
-      (address origOwner, uint256 royalties) = royalty.royaltyInfo(tokenId, msg.value);
+      (address origOwner, uint256 royalties) = royalty.royaltyInfo(item.tokenId, msg.value);
       payable(this.owner()).transfer(db.getListingPrice());
       payable(origOwner).transfer(royalties);
       payable(db.getOttoWallet()).transfer(fee);
-      seller.call{value: (msg.value - fee - royalties), gas: 5000};
+      item.seller.call{value: (msg.value - fee - royalties), gas: 5000};
 
-      bytes32 newTokenSeller = hash(msg.sender, tokenId, "");
+      bytes32 newTokenSeller = hash(msg.sender, item.tokenId, "");
 
-      sold += _amount;
+      item.sold += _amount;
       if (!updateResellItem(newTokenSeller, _amount)){ 
-        createResellItem(_tokenSeller, newTokenSeller, price, _amount);
+        createResellItem(_tokenSeller, newTokenSeller, item.price, _amount);
       }
 
-      this.safeTransferFrom(address(this), msg.sender, tokenId, _amount, "");
+      this.safeTransferFrom(address(this), msg.sender, item.tokenId, _amount, "");
       
-      if (amount == sold){
-        owner = payable(address(0));
+      if (item.amount == item.sold){
+        item.owner = payable(address(0));
         db.anotherSold();
       }
 
-      db.setMarketItem(_tokenSeller, db.newMarketItem(
-        _tokenSeller, 
-        tokenId, 
-        seller, 
-        owner, 
-        price, 
-        amount, 
-        sold
-      ));
+      db.setMarketItem(_tokenSeller, item);
     }
 
     function updateResellItem(bytes32 _tokenSeller, uint256 _amount)
       private 
       returns (bool) 
     {      
-      (uint256 tokenId, 
-        address payable seller, 
-        address payable owner, 
-        uint256 price,
-        uint256 amount, 
-        uint256 sold) = db.getMarketItem(_tokenSeller);
+      MarketItem memory item = db.getMarketItem(_tokenSeller);
 
-      if (tokenId == 0) return false;
+      if (item.tokenId == 0) return false;
     
-      amount += _amount;
-      owner = payable(msg.sender);
-      seller = payable(address(0));
+      item.amount += _amount;
+      item.owner = payable(msg.sender);
+      item.seller = payable(address(0));
 
-      db.setMarketItem(_tokenSeller, db.newMarketItem(
-        _tokenSeller, 
-        tokenId, 
-        seller, 
-        owner, 
-        price, 
-        amount, 
-        sold
-      ));
+      db.setMarketItem(_tokenSeller, item);
       
       db.setTokenUri(_tokenSeller, db.getTokenUri(_tokenSeller));
 
@@ -233,140 +198,39 @@ contract OttoMarketplace is Ownable, ERC1155, IERC1155Receiver, ReentrancyGuard 
 
     /* allows someone to resell a token they have purchased */
     function resellToken(bytes32 _tokenSeller, string memory _tokenURI, uint256 _price) public payable {
-      (uint256 tokenId, 
-        address payable seller, 
-        address payable owner, 
-        uint256 price, 
-        uint256 amount, 
-        uint256 sold) = db.getMarketItem(_tokenSeller);
+      MarketItem memory item = db.getMarketItem(_tokenSeller);
 
-      require(owner == msg.sender, "Only item owner can perform this operation");
-      require(balanceOf(msg.sender, tokenId) >= 0, "Cannot sell tokens you do not own.");
+      require(item.owner == msg.sender, "Only item owner can perform this operation");
+      require(balanceOf(msg.sender, item.tokenId) >= 0, "Cannot sell tokens you do not own.");
       require(msg.value >= db.getListingPrice(), "Price must be equal or greater to listing price");   
 
-      uint256 origAmount = amount;
+      uint256 origAmount = item.amount;
       
-      price = _price;
-      seller = payable(msg.sender);
-      owner = payable(address(this));
+      item.price = _price;
+      item.seller = payable(msg.sender);
+      item.owner = payable(address(this));
 
-      db.setMarketItem(_tokenSeller, db.newMarketItem(
-        _tokenSeller, 
-        tokenId, 
-        seller, 
-        owner, 
-        price, 
-        amount, 
-        sold
-      ));
+      db.setMarketItem(_tokenSeller, item);
 
       db.setTokenUri(_tokenSeller, _tokenURI);
-      _safeTransferFrom(msg.sender, address(this), tokenId, origAmount, "");
+      _safeTransferFrom(msg.sender, address(this), item.tokenId, origAmount, "");
 
       // emit db.MarketItemCreated(_tokenSeller, tokenId, msg.sender, address(this), _price, origAmount, sold);
     }
 
     function getAllItems() public view returns (MarketItem[] memory _items) {
-      (bytes32[] memory tokenSeller, 
-        uint256[] memory tokenId, 
-        address[] memory seller, 
-        address[] memory owner, 
-        uint256[] memory price, 
-        uint256[] memory amount, 
-        uint256[] memory sold) = db.fetchAllItems();
-
-      _items = new MarketItem[](tokenSeller.length);
-      
-      for (uint256 i = 0; i < tokenSeller.length; i++) {
-        MarketItem memory item = MarketItem(
-          tokenSeller[i], 
-          tokenId[i], 
-          payable(seller[i]), 
-          payable(owner[i]), 
-          price[i], 
-          amount[i], 
-          sold[i]
-        );
-
-        _items[i] = item;
-      }
+      return(db.fetchAllItems());
     }
 
     function getMarketItems() public view returns (MarketItem[] memory _items) {
-      (bytes32[] memory tokenSeller, 
-        uint256[] memory tokenId, 
-        address[] memory seller, 
-        address[] memory owner, 
-        uint256[] memory price, 
-        uint256[] memory amount, 
-        uint256[] memory sold) = db.fetchMarketItems(address(this));
-
-      _items = new MarketItem[](tokenSeller.length);
-      
-      for (uint256 i = 0; i < tokenSeller.length; i++) {
-        MarketItem memory item = MarketItem(
-          tokenSeller[i], 
-          tokenId[i], 
-          payable(seller[i]), 
-          payable(owner[i]), 
-          price[i], 
-          amount[i], 
-          sold[i]
-        );
-
-        _items[i] = item;
-      }      
+      return(db.fetchMarketItems(address(this)));
     }
 
     function getMyNFTs() public view returns (MarketItem[] memory _items) {
-      (bytes32[] memory tokenSeller, 
-        uint256[] memory tokenId, 
-        address[] memory seller, 
-        address[] memory owner, 
-        uint256[]  memory price, 
-        uint256[] memory amount, 
-        uint256[] memory sold) = db.fetchMyNFTs(msg.sender);
-
-      _items = new MarketItem[](tokenSeller.length);
-      
-      for (uint256 i = 0; i < tokenSeller.length; i++) {
-        MarketItem memory item = MarketItem(
-          tokenSeller[i], 
-          tokenId[i], 
-          payable(seller[i]), 
-          payable(owner[i]), 
-          price[i], 
-          amount[i], 
-          sold[i]
-        );
-
-        _items[i] = item;
-      }            
+      return(db.fetchMyNFTs(msg.sender));         
     }
 
     function getItemsListed() public view returns (MarketItem[] memory _items) {
-      (bytes32[] memory tokenSeller, 
-        uint256[] memory tokenId, 
-        address[] memory seller, 
-        address[] memory owner, 
-        uint256[] memory price, 
-        uint256[] memory amount, 
-        uint256[] memory sold) = db.fetchItemsListed(msg.sender);
-
-      _items = new MarketItem[](tokenSeller.length);
-      
-      for (uint256 i = 0; i < tokenSeller.length; i++) {
-        MarketItem memory item = MarketItem(
-          tokenSeller[i], 
-          tokenId[i], 
-          payable(seller[i]), 
-          payable(owner[i]), 
-          price[i], 
-          amount[i], 
-          sold[i]
-        );
-
-        _items[i] = item;
-      }     
+      return(db.fetchItemsListed(msg.sender));
     }
 }
