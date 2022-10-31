@@ -24,10 +24,7 @@ export const NFTProvider = ({ children }) => {
     const provider = new ethers.providers.Web3Provider(connection); // const provider = new ethers.providers.JsonRpcProvider();
     const contract = fetchContract(provider);
 
-    console.log('before getMarketItems in fetchNFTs in NFTContext');
     const data = await contract.getMarketItems();
-    // const data = await contract.getAllItems();
-    console.log(`after getMarketItems in fetchNFTs in NFTContext ${data.length}`);
 
     const items = await Promise.all(data.map(async ({ tokenSeller, tokenId, seller, owner, price: unformattedPrice, amount, sold }) => {
       const tokenURI = await contract.tokenURI(tokenSeller);
@@ -49,9 +46,7 @@ export const NFTProvider = ({ children }) => {
 
     const contract = fetchContract(signer);
 
-    console.log(`before getItemsListed and getMyNFT: ${type}`);
     const data = (type === 'fetchItemsListed') ? await contract.getItemsListed() : await contract.getMyNFTs();
-    console.log(`after getItemsListed and getMyNFT: ${type}`);
 
     const items = await Promise.all(data.map(async ({ tokenSeller, tokenId, seller, owner, price: unformattedPrice, amount, sold }) => {
       const tokenURI = await contract.tokenURI(tokenSeller);
@@ -90,7 +85,7 @@ export const NFTProvider = ({ children }) => {
     const price = ethers.utils.parseUnits(formInputPrice, 'ether');
     const contract = fetchContract(signer);
     const listingPrice = await contract.getListingPrice();
-    console.log(`in resellToken in NFTContext before resellToken url: ${url}`);
+
     const transaction = await contract.resellToken(id, url, price, { value: listingPrice.toString() });
 
     setIsLoadingNFT(true);
@@ -107,9 +102,7 @@ export const NFTProvider = ({ children }) => {
     const amount = parseInt(formInputAmount, 10);
     const price = ethers.utils.parseUnits((nft.price * amount).toString(), 'ether');
 
-    console.log('In NFTContext in buyNft before createMarketSale');
     const transaction = await contract.createMarketSale(nft.tokenSeller, amount, { value: price });
-    console.log('In NFTContext in buyNft after createMarketSale');
 
     setIsLoadingNFT(true);
     await transaction.wait();
