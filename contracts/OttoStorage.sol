@@ -8,10 +8,11 @@ import "./Allowable.sol";
 import "./IOttoMarketplace.sol";
 
 contract OttoStorage is Ownable, IOttoMarketplace { 
-    Allowable access;
+    Allowable private access;
 
-    constructor(address _allowable) {
-        access = Allowable(_allowable);
+    constructor(address _allowable, address _wallet) {
+      access = Allowable(_allowable);
+      otto = _wallet;
     }
 
     modifier isAllowed {
@@ -23,11 +24,11 @@ contract OttoStorage is Ownable, IOttoMarketplace {
     mapping (bytes32 => string) private tokenURIs;    
 
     function setTokenUri(bytes32 _tokenSeller, string memory _tokenURI) public isAllowed {
-         tokenURIs[_tokenSeller] = _tokenURI; 
+      tokenURIs[_tokenSeller] = _tokenURI; 
     }     
     
     function getTokenUri(bytes32 _tokenSeller) public view isAllowed returns (string memory) { 
-        return(tokenURIs[_tokenSeller]); 
+      return(tokenURIs[_tokenSeller]); 
     } 
     
     //Token Ids
@@ -35,93 +36,80 @@ contract OttoStorage is Ownable, IOttoMarketplace {
     Counters.Counter private tokenIds;
 
     function currentTokenId () public view isAllowed returns (uint256 _amount) {
-        return tokenIds.current();
+      return tokenIds.current();
     }
 
     function nextTokenId() public isAllowed returns (uint256 _amount) {
-        tokenIds.increment();
-        return tokenIds.current();
+      tokenIds.increment();
+      return tokenIds.current();
     }
 
     //Items Sold
     Counters.Counter private itemsSold;
     
     function getItemsSold() public view isAllowed returns (uint256 _amount) {
-        return itemsSold.current();
+      return itemsSold.current();
     }
 
     function anotherSold() public isAllowed {
-        itemsSold.increment();
+      itemsSold.increment();
     }
 
     // Listing Price
-    uint256 listingPrice = 0.025 ether;    
+    uint256 private listingPrice = 0.025 ether;    
     
-    function updateListingPrice(uint _listingPrice) public payable onlyOwner {
+    function updateListingPrice(uint256 _listingPrice) public payable onlyOwner {
       listingPrice = _listingPrice;
     }
 
-    function getListingPrice() public virtual view isAllowed returns (uint256 _listingPrice) {
+    function getListingPrice() public view isAllowed returns (uint256 _listingPrice) {
       return listingPrice;
     }
 
     // Otto Share
-    uint128 constant ottoShare = 3;
+    uint96 private ottoShare = 3;
     
-    function getOttoShare() public view isAllowed returns (uint128 _ottoShare){
-        return ottoShare;
+    function getOttoShare() public view isAllowed returns (uint96 _ottoShare){
+      return ottoShare;
+    }
+
+    function setOttoShare(uint96 _share) public onlyOwner {
+      ottoShare = _share;
     }
 
     // Scale
-    uint128 constant scale = 10;
+    uint96 private scale = 10;
     
-    function getScale() public view isAllowed returns (uint128 _scale){
-        return scale;
+    function getScale() public view isAllowed returns (uint96 _scale){
+      return scale;
+    }
+
+    function setScale (uint96 _scale) public isAllowed {
+      scale = _scale;
     }
 
     // Otto Wallet
-    address constant otto = 0x4f1401d78d87B1025423F4f7a478F3164cf3B2F8 ;
+    address private otto;
     
     function getOttoWallet() public view isAllowed returns (address _otto) {
-        return otto;
+      return otto;
     }
 
     // Token Sellers
     bytes32[] private tokenSellers;
     
     function addTokenSeller(bytes32 _seller) public isAllowed {
-        tokenSellers.push(_seller);
+      tokenSellers.push(_seller);
     }
 
     function getTokenSellers() public view isAllowed returns (bytes32[] memory _addresses) {
-        return tokenSellers;
-    }
-
-    function newMarketItem(
-      bytes32 _tokenSeller, 
-      uint256 _tokenId, 
-      address payable _seller, 
-      address payable _owner, 
-      uint256 _price, 
-      uint256 _amount, 
-      uint256 _sold
-    )
-      public view isAllowed returns (MarketItem memory _item) 
-    {
-        _item = MarketItem (_tokenSeller,
-            _tokenId,
-            _seller,
-            _owner,
-            _price,
-            _amount,
-            _sold
-          );
+      return tokenSellers;
     }
 
     mapping(bytes32 => MarketItem) private marketItems;
     
     function setMarketItem (bytes32 _seller, MarketItem memory _item) public isAllowed {
-        marketItems[_seller] = _item;
+      marketItems[_seller] = _item;
     }
 
     function getMarketItem (bytes32 _sellerId) public view isAllowed returns (MarketItem memory _item)

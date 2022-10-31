@@ -39,7 +39,7 @@ export const TMDBProvider = ({ children }) => {
 
   const GetSessionURL = () => {
     if (requestToken === '') return '';
-    return (`https://www.themoviedb.org/authenticate/${requestToken}?redirect_to=http://localhost:3000/login-nfts`);
+    return (`https://www.themoviedb.org/authenticate/${requestToken}?redirect_to=https://otto-market-stage.azurewebsites.net/login-nfts`);
   };
 
   const GetSession = async (token) => {

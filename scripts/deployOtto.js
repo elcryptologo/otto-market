@@ -9,7 +9,7 @@ async function main() {
   console.log('Allowable deployed to:', allowable.address);
 
   const OttoStorage = await hre.ethers.getContractFactory('OttoStorage');
-  const ottoStorage = await OttoStorage.deploy(allowable.address);
+  const ottoStorage = await OttoStorage.deploy(allowable.address, '0x4f1401d78d87B1025423F4f7a478F3164cf3B2F8');
   await ottoStorage.deployed();
   await allowContract.allowAccess(ottoStorage.address);
 
