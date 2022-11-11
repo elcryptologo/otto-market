@@ -17,7 +17,7 @@ export const TMDBProvider = ({ children }) => {
   const GetToken = async () => {
     try {
       if (requestToken !== '' || expires.setHours(1) < Date.now) return [];
-      const response = await fetch('https://api.themoviedb.org/3/authentication/token/new?api_key=b204a0381ec6e87c4459f4b9ad7759d2');
+      const response = await fetch(`${process.env.tmdbApiHost}/3/authentication/token/new?api_key=${process.env.tmdbKey}`);
       const result = await response.json();
       const items = [result].map((tmdb) => {
         if (!tmdb.success) {
@@ -39,13 +39,13 @@ export const TMDBProvider = ({ children }) => {
 
   const GetSessionURL = () => {
     if (requestToken === '') return '';
-    return (`https://www.themoviedb.org/authenticate/${requestToken}?redirect_to=https://otto-market-stage.azurewebsites.net/login-nfts`);
+    return (`${process.env.tmdbHost}/authenticate/${requestToken}?redirect_to=${process.env.localHost}/login-nfts`);
   };
 
   const GetSession = async (token) => {
     try {
       if (token === '') return;
-      const response = await fetch(`https://api.themoviedb.org/3/authentication/session/new?api_key=b204a0381ec6e87c4459f4b9ad7759d2&request_token=${token}`);
+      const response = await fetch(`${process.env.tmdbApiHost}/3/authentication/session/new?api_key=${process.env.tmdbKey}&request_token=${token}`);
       const result = await response.json();
       setSession([result].map((tmdb) => {
         if (!tmdb.success) {
@@ -88,7 +88,7 @@ export const TMDBProvider = ({ children }) => {
     try {
       if (session === '' && _session === '') return;
       if (session !== '' && _session === '') _session = session;
-      const response = await fetch(`https://api.themoviedb.org/3/account?api_key=b204a0381ec6e87c4459f4b9ad7759d2&session_id=${_session}`);
+      const response = await fetch(`${process.env.tmdbApiHost}/3/account?api_key=${process.env.tmdbKey}&session_id=${_session}`);
       const result = await response.json();
       const user = [result].map((tmdb) => {
         setUserName(tmdb.username);

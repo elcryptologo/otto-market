@@ -20,7 +20,7 @@ const PaymentBodyCmp = ({ nft, nftCurrency, amount }) => (
     <div className="flexBetweenStart my-5">
       <div className="flex-col flexStartCenter">
         <div className="relative w-28 h-28">
-          <img src={nft.image || images[`nft${nft.i}`]} layout="fill" objectFit="cover" />
+          <Image src={nft.image || images[`nft${nft.i}`]} layout="fill" objectFit="cover" />
         </div>
         <div className="flexStartCenter content-end mt-2 flex-col">
           <p className="font-roboto dark:text-white text-nft-black-1 font-semibold text-sm minlg:text-xl">{shortenAddress(nft.seller)}</p>
@@ -47,7 +47,7 @@ const PaymentBodyCmp = ({ nft, nftCurrency, amount }) => (
 const AssetDetails = () => {
   const { nftCurrency, buyNft, currentAccount, isLoadingNFT } = useContext(NFTContext);
   const { session, GetGravatarURL } = useContext(TMDBContext);
-  const [nft, setNft] = useState({ image: '', itemId: '', tokenSeller: '', name: '', owner: '', price: '', amount: '', sold: '', seller: '' });
+  const [nft, setNft] = useState({ price: '', tokenId: '', tokenSeller: '', amount: '', sold: '', seller: '', owner: '', image: '', name: '', description: '', tokenURI: '' });
   const [paymentModal, setPaymentModal] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -55,7 +55,7 @@ const AssetDetails = () => {
   const priceRef = useRef(null);
   const router = useRouter();
   const alert = useAlert();
-  const avatarImg = GetGravatarURL();
+  const [avatarImg, setAvatarImg] = useState('');
 
   useEffect(() => {
     if (session === '') {
@@ -63,8 +63,9 @@ const AssetDetails = () => {
         type: 'error',
         onClose: () => {
           router.push('/');
-        },
-      });
+        } });
+    } else {
+      setAvatarImg(GetGravatarURL());
     }
   }, [session]);
 
@@ -81,7 +82,7 @@ const AssetDetails = () => {
     if (!router.isReady) return;
 
     setNft(router.query);
-
+    console.log(`nft-details image: ${nft.image}`);
     setIsLoading(false);
   }, [router.isReady]);
 
@@ -108,7 +109,7 @@ const AssetDetails = () => {
     <div className="relative flex justify-center md:flex-col min-h-screen">
       <div className="relative flex-1 flexCenter sm:px-4 p-12 border-r md:border-r-0 md:border-b dark:border-nft-black-1 border-nft-gray-1">
         <div className="relative w-557 minmd:w-2/3 minmd:h-2/3 sm:w-full sm:h-300 h-557 ">
-          <img src={nft.image || images[`nft${nft.i}`]} objectFit="cover" className=" rounded-xl shadow-lg" layout="fill" />
+          <Image src={nft.image || images[`nft${nft.i}`]} objectFit="cover" className=" rounded-xl shadow-lg" layout="fill" />
         </div>
       </div>
 
@@ -121,9 +122,9 @@ const AssetDetails = () => {
           <p className="font-roboto dark:text-white text-nft-black-1 text-xs minlg:text-base font-normal">Creator</p>
           <div className="flex flex-row items-center mt-3">
             <div className="relative w-12 h-12 minlg:w-20 minlg:h-20 mr-2">
-              {currentAccount === nft.seller.toLowerCase() || currentAccount === nft.owner.toLowerCase()
-                ? <img loader={() => avatarImg} width={200} height={200} src={avatarImg} objectFit="cover" className="rounded-full" />
-                : <Image src={images.creator1} objectFit="cover" className="rounded-full" />}
+              {(currentAccount === nft.seller.toLowerCase() || currentAccount === nft.owner.toLowerCase()) && avatarImg !== ''
+                ? <Image loader={() => avatarImg} src={avatarImg} width={200} height={200} objectFit="cover" className="rounded-full" />
+                : <Image src={images.creator1} width={200} objectFit="cover" className="rounded-full" />}
             </div>
             <p className="font-roboto dark:text-white text-nft-black-1 text-sm minlg:text-lg font-semibold">
               {shortenAddress((currentAccount === nft.seller.toLowerCase()) ? nft.seller : nft.owner)}
@@ -249,7 +250,7 @@ const AssetDetails = () => {
           body={(
             <div className="flexCenter flex-col text-center" onClick={() => setSuccessModal(false)}>
               <div className="relative w-52 h-52">
-                <img src={nft.image || images[`nft${nft.i}`]} objectFit="cover" layout="fill" />
+                <Image src={nft.image || images[`nft${nft.i}`]} objectFit="cover" layout="fill" />
               </div>
               <p className="font-roboto dark:text-white text-nft-black-1 text-sm minlg:text-xl font-normal mt-10"> You successfully purchased <span className="font-semibold">{nft.name}</span> from <span className="font-semibold">{shortenAddress(nft.seller)}</span>.</p>
             </div>
