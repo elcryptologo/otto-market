@@ -1,6 +1,9 @@
+/* eslint-disable no-underscore-dangle */
 import { useEffect, useState, useMemo, useCallback, useContext } from 'react';
-import { create as ipfsHttpClient } from 'ipfs-http-client';
+// import { create as ipfsHttpClient } from 'ipfs-http-client';
 import { useRouter } from 'next/router';
+import axios from 'axios';
+// import fs from 'fs';
 import { useDropzone } from 'react-dropzone';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
@@ -8,20 +11,9 @@ import { useAlert } from 'react-alert';
 
 import { NFTContext } from '../context/NFTContext';
 import { TMDBContext } from '../context/TMDBService';
-import { auth } from '../context/constants';
+// import { auth } from '../context/constants';
 import { Button, Input, Loader } from '../components';
 import images from '../assets';
-
-const client = ipfsHttpClient({
-  host: 'ipfs.infura.io',
-  port: 5001,
-  protocol: 'https',
-  apiPath: 'api/v0',
-  headers: {
-    authorization: auth,
-  },
-});
-// const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0');
 
 const CreateItem = () => {
   const { createToken, isLoadingNFT } = useContext(NFTContext);
@@ -44,14 +36,30 @@ const CreateItem = () => {
     }
   }, [session]);
 
-  const uploadToInfura = async (file) => {
+  const uploadToPinata = async (file) => {
     try {
-      const added = await client.add({ content: file });
+      const data = new FormData();
+      data.append('file', file);
 
-      const url = `https://otto.infura-ipfs.io/ipfs/${added.path}`;
-      setFileUrl(url);
+      const metadata = JSON.stringify({
+        name: 'OttoMarket Image',
+      });
+      data.append('pinataMetadata', metadata);
+
+      const res = await axios.post(
+        'https://api.pinata.cloud/pinning/pinFileToIPFS',
+        data,
+        { maxBodyLength: 'Infinity',
+          headers: {
+            'Content-Type': `multipart/form-data; boundary=${data._boundary}`,
+            Authorization: `Bearer ${process.env.pinAuth}`,
+          } },
+      );
+      console.log(res.data);
+      setFileUrl(`https://gateway.pinata.cloud/ipfs/${res.data.IpfsHash}`);
     } catch (error) {
-      alert.show(`Error uploading file: ${error.msg}`, {
+      console.log(`error: ${error}`);
+      alert.show(`Error uploading file: ${error}`, {
         type: 'error',
         onClose: () => {
           const router = useRouter();
@@ -62,7 +70,7 @@ const CreateItem = () => {
   };
 
   const onDrop = useCallback(async (acceptedFile) => {
-    await uploadToInfura(acceptedFile[0]);
+    await uploadToPinata(acceptedFile[0]);
   }, []);
 
   const { getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject } = useDropzone({
@@ -88,15 +96,39 @@ const CreateItem = () => {
     const { price, amount, royalties, name, description } = formInput;
     if (!name || !description || !price || !amount || !royalties || !fileUrl) return;
     /* first, upload to IPFS */
-    const data = JSON.stringify({ name, description, price, amount, image: fileUrl });
+    const data = JSON.stringify({
+      pinataMetadata: {
+        name: 'OttoMarket Item',
+      },
+      pinataContent: {
+        name,
+        description,
+        price,
+        amount,
+        image: fileUrl,
+      },
+    });
+
     try {
-      const added = await client.add(data);
-      const url = `https://otto.infura-ipfs.io/ipfs/${added.path}`;
-      /* after file is uploaded to IPFS, pass the URL to save it on Polygon */
+      const res = await axios.post(
+        'https://api.pinata.cloud/pinning/pinJSONToIPFS',
+        data,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${process.env.pinAuth}`,
+          },
+        },
+      );
+
+      console.log(res.data);
+      const url = `https://gateway.pinata.cloud/ipfs/${res.data.IpfsHash}`;
+
       await createToken(url, formInput.price, formInput.amount, formInput.royalties);
       router.push('/');
     } catch (error) {
-      alert.show('Error uploading file: ', {
+      console.log(error.msg);
+      alert.show(`Error uploading file: ${error}`, {
         type: 'error',
       });
     }
@@ -141,9 +173,11 @@ const CreateItem = () => {
             {fileUrl && (
               <aside>
                 <div>
-                  <img
+                  <Image
                     src={fileUrl}
                     alt="Asset_file"
+                    width={400}
+                    height={400}
                   />
                 </div>
               </aside>
