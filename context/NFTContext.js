@@ -11,7 +11,7 @@ const fetchContract = (signerOrProvider) => new ethers.Contract(MarketAddress, M
 const isApprovedForAll = async (signerOrProvider) => fetchContract.isApprovedForAll(signerOrProvider, MarketAddress);
 
 export const NFTProvider = ({ children }) => {
-  const nftCurrency = 'ETH';
+  const nftCurrency = `${process.env.currency}`;
   const [currentAccount, setCurrentAccount] = useState('');
   const [isLoadingNFT, setIsLoadingNFT] = useState(false);
 
