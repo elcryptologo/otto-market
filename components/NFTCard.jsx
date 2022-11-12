@@ -26,9 +26,6 @@ const NFTCard = ({ nft, onProfilePage }) => {
                 <p className="font-roboto dark:text-white text-nft-black-1 font-semibold text-xs minlg:text-lg">{nft.amount - nft.sold} of {nft.amount}</p>
                 <p className="font-roboto dark:text-white text-nft-black-1 font-semibold text-xs minlg:text-lg">{shortenAddress(onProfilePage ? nft.owner : nft.seller)}</p>
               </div>
-              <p className="font-roboto dark:text-white text-nft-black-1 font-semibold text-xs minlg:text-lg"><span className="font-normal">owner:</span> {shortenAddress(nft.owner)} </p>
-              <p className="font-roboto dark:text-white text-nft-black-1 font-semibold text-xs minlg:text-lg"><span className="font-normal">seller:</span> {shortenAddress(nft.seller)} </p>
-              <p className="font-roboto dark:text-white text-nft-black-1 font-semibold text-xs minlg:text-lg"><span className="font-normal">sold:</span> {nft.sold} </p>
             </div>
           </div>
           <div className="mt-1 minlg:mt-3 flexBetween flex-row" />

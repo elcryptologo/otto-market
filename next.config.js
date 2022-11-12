@@ -1,14 +1,5 @@
 /* eslint-disable max-len */
 module.exports = {
-  // reactStrictMode: true,
-  // remotePatterns: [
-  //   {
-  //     protocol: 'https',
-  //     hostname: 'gateway.pinata.cloud',
-  //     port: '',
-  //     pathname: '/ipfs/',
-  //   },
-  // ],
   images: {
     domains: ['gateway.pinata.cloud'],
   },
@@ -17,6 +8,6 @@ module.exports = {
     tmdbKey: 'b204a0381ec6e87c4459f4b9ad7759d2',
     tmdbApiHost: 'https://api.themoviedb.org',
     tmdbHost: 'https://www.themoviedb.org',
-    localHost: 'https://otto-market-stage',
+    localHost: 'http://otto-market-stage',
   },
 };
