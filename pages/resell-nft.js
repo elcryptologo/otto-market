@@ -6,7 +6,6 @@ import axios from 'axios';
 
 import { NFTContext } from '../context/NFTContext';
 import { TMDBContext } from '../context/TMDBService';
-import { pinAuth } from '../context/constants';
 import { Button, Loader } from '../components';
 
 const ResellNFT = () => {
@@ -45,23 +44,37 @@ const ResellNFT = () => {
   }, [id]);
 
   const resell = async () => {
-    if (!name || !description || !price || !image) {
+    if (!name || !description || !amount || !price || !image) {
       console.log(`name: ${name} desc: ${description} price: ${price}`);
       return;
     }
 
-    const data = JSON.stringify({ name, description, price, image });
-    const client = axios({
-      method: 'post',
-      url: 'https://api.pinata.cloud/pinning/pinFileToIPFS',
-      headers: {
-        // eslint-disable-next-line max-len
-        Authorization: `Bearer ${pinAuth}`,
-        'Content-Type': 'multipart/form-data',
+    const data = JSON.stringify({
+      pinataMetadata: {
+        name: 'OttoMarket Resell Item',
       },
-      data,
+      pinataContent: {
+        name,
+        description,
+        price,
+        amount,
+        image,
+      },
     });
-    const url = `https://gateway.pinata.cloud/ipfs/${client.data.IpfsHash}`;
+
+    const res = await axios.post(
+      'https://api.pinata.cloud/pinning/pinJSONToIPFS',
+      data,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${process.env.pinAuth}`,
+        },
+      },
+    );
+
+    console.log(res.data);
+    const url = `https://gateway.pinata.cloud/ipfs/${res.data.IpfsHash}`;
 
     console.log('before resellToken in resell in resell-nft');
     await resellToken(id, url, price);
@@ -96,7 +109,7 @@ const ResellNFT = () => {
           </p>
         </div>
 
-        {image && <Image className="rounded mt-4" width="350" src={image} />}
+        {image && <Image className="rounded mt-4" width={350} height={350} src={image} />}
 
         <div className="mt-7 flex flex-none grid-cols-2 gap-40 justify-start sm:flex-col">
           <Button
