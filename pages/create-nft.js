@@ -3,7 +3,6 @@ import { useEffect, useState, useMemo, useCallback, useContext } from 'react';
 // import { create as ipfsHttpClient } from 'ipfs-http-client';
 import { useRouter } from 'next/router';
 import axios from 'axios';
-// import fs from 'fs';
 import { useDropzone } from 'react-dropzone';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
@@ -11,7 +10,6 @@ import { useAlert } from 'react-alert';
 
 import { NFTContext } from '../context/NFTContext';
 import { TMDBContext } from '../context/TMDBService';
-// import { auth } from '../context/constants';
 import { Button, Input, Loader } from '../components';
 import images from '../assets';
 
