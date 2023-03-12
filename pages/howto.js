@@ -213,21 +213,6 @@ const howto = () => (
                     </div>
                   </div>
                 </div>
-                <div className="team_box_content jeff_simp">
-                  <div className="box_img cmo">
-                    <Image src={images.cmo} />
-                  </div>
-                  <div className="box_title">
-                    <h5 className="h5">Jeff Simpson</h5>
-                    <h6 className="h6">Chief Marketing Officer</h6>
-                    <p className="t5">A Sales and Marketing specialist with over 15 years in Business Management experience. Current CEO of the cryptocurrency token Aurum on the Binance Smart Chain.</p>
-                    <div className="box_icon">
-                      <a href="https://www.linkedin.com/in/jeff-simpson-427262229/" target="_blank" rel="noreferrer">
-                        <i className="fa-brands fa-linkedin" />
-                      </a>
-                    </div>
-                  </div>
-                </div>
                 <div className="team_box_content jon_yudi">
                   <div className="box_img advisor">
                     <Image src={images.advisor} />
