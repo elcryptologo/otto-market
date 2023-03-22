@@ -1,4 +1,4 @@
-  {
+{
   "name": "otto-market",
   "version": "0.1.0",
   "private": true,
@@ -63,5 +63,6 @@
     "@nomiclabs/hardhat-ethers": "^2.0.0",
     "autoprefixer": "^10.4.11",
     "chai": "^4.2.0",
-    "eslint": "^8.27"}
+    "eslint": "^8.27"
   }
+}
