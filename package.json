@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "pm2-runtime start ecosystem.config.js --env production",
     "lint": "next lint",
-    "package": "command-to-execute"
+    "package": "webpack --mode production"
   },
   "browser": {
     "fs": false,
