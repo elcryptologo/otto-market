@@ -2,7 +2,8 @@
   "name": "otto-market",
   "version": "0.1.0",
   "scripts": {
-    "package": "command-to-execute"
+    "start": "pm2-runtime start ecosystem.config.js --env production",
+    "package": "command-to-execute"}
   "private": true,
   "scripts": : { "start": "pm2-runtime start ecosystem.config.js --env production" } },
   
