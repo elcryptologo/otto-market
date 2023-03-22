@@ -2,7 +2,7 @@
   "version": "0.1.0",
   "scripts": {
     "start": "pm2-runtime start ecosystem.config.js --env production",
-    "package": "command-to-execute"
+    "package": "webpack --mode production"
   },
   "private": true,
   "browser": {
