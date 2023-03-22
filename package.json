@@ -3,14 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-  "predeploy": "npm run build",
-  "dev": "next dev",
-  "build": "next build",
-  "start": "pm2-runtime start ecosystem.config.js --env production",
-  "lint": "next lint",
-  "start": "pm2-runtime start ecosystem.config.js --env production",
-  "package": "command-to-execute"
-},
+    "predeploy": "npm run build",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "pm2-runtime start ecosystem.config.js --env production",
+    "lint": "next lint",
+    "start": "pm2-runtime start ecosystem.config.js --env production",
+    "package": "command-to-execute"
+  },
   "browser": {
     "fs": false,
     "path": false,
@@ -63,15 +63,4 @@
     "@nomiclabs/hardhat-ethers": "^2.0.0",
     "autoprefixer": "^10.4.11",
     "chai": "^4.2.0",
-    "eslint": "^8.27.0",
-    "eslint-config-airbnb": "^19.0.4",
-    "eslint-config-next": "12.1.0",
-    "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-jsx-a11y": "^6.5.1",
-    "eslint-plugin-react": "^7.30.0",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "ethereum-waffle": "^3.0.0",
-    "postcss": "^8.4.16",
-    "tailwindcss": "^3.1.8"
-  }
-}
+    "eslint": "^8.27.
