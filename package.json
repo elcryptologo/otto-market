@@ -3,14 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "predeploy": "npm run build",
-    "dev": "next dev",
-    "build": "next build",
-    "start": "pm2-runtime start ecosystem.config.js --env production",
-    "lint": "next lint"
-    "start": "pm2-runtime start ecosystem.config.js --env production",
-    "package": "command-to-execute"
-  },
+  "predeploy": "npm run build",
+  "dev": "next dev",
+  "build": "next build",
+  "start": "pm2-runtime start ecosystem.config.js --env production",
+  "lint": "next lint",
+  "start": "pm2-runtime start ecosystem.config.js --env production",
+  "package": "command-to-execute"
+},
   "browser": {
     "fs": false,
     "path": false,
