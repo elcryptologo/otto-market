@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "start": "pm2-runtime start ecosystem.config.js --env production",
+    "package": "command-to-execute"
     "predeploy": "npm run build",
     "dev": "next dev",
     "build": "next build",
