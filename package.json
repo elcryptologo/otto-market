@@ -4,7 +4,6 @@
   "private": true,
   "scripts":{ 
     "start": "pm2-runtime start ecosystem.config.js --env production",
-     "build": "next build"
    }, 
   
   "browser": {
