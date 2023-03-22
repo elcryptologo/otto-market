@@ -3,12 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "predeploy": "npm run",
+    "predeploy": "npm run buil",
     "dev": "next dev",
     "build": "next build",
     "start": "pm2-runtime start ecosystem.config.js --env production",
     "lint": "next lint",
-    "package": "webpack --mode production"
   },
   "browser": {
     "fs": false,
