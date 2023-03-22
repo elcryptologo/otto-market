@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts":{ 
-    "start": "pm2-runtime start ecosystem.config.js --env production"
+    "start": "pm2-runtime start ecosystem.config.js --env production",
      "build": "next build"
    }, 
   
