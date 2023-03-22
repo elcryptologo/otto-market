@@ -2,9 +2,7 @@
   "name": "otto-market",
   "version": "0.1.0",
   "private": true,
-  "scripts":{ 
-    "start": "pm2-runtime start ecosystem.config.js --env production"
-   }, 
+  "scripts": { "start": "pm2-runtime start ecosystem.config.js --env production" },
   
   "browser": {
     "fs": false,
