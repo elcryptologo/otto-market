@@ -1,39 +1,39 @@
-name: Deploy to Azure Web App
+name: Deploy to Azure Web Apps
 
 on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 env:
   AZURE_WEBAPP_NAME: otto-market
-  AZURE_WEBAPP_PACKAGE_PATH: "./build"
+  AZURE_WEBAPP_PACKAGE_PATH: "."
+  NODE_VERSION: 16
 
 jobs:
   build-and-deploy:
+    name: Build and Deploy
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - name: Use Node.js 16.x
-        uses: actions/setup-node@v2
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v3
         with:
-          node-version: '16.x'
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Install Dependencies
         run: npm install
 
-      - name: Build
+      - name: Build App
         run: npm run build
 
-      - name: Package
-        run: npm run package
-
-      - name: Deploy to Azure Web App
+      - name: Deploy
         uses: azure/webapps-deploy@v2
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
-
