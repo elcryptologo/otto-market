@@ -6,6 +6,10 @@ on:
       - main
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 env:
   AZURE_WEBAPP_NAME: otto-market
   AZURE_WEBAPP_PACKAGE_PATH: "."
