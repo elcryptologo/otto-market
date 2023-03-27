@@ -52,5 +52,5 @@ jobs:
         with:
           app-name: 'otto-market'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_7C01625EFC0544988DFC3FA260341BCF }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_2DDA8E8073B148D3A7F333FC0A46FF28 }}
           package: .
