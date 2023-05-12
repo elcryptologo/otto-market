@@ -8,8 +8,8 @@ module.exports = {
     tmdbKey: 'b204a0381ec6e87c4459f4b9ad7759d2',
     tmdbApiHost: 'https://api.themoviedb.org',
     tmdbHost: 'https://www.themoviedb.org',
-    localHost: 'http://localhost:3000',
-    // localHost: 'https://ottonft.com',
+    // localHost: 'http://localhost:3000',
+    localHost: 'https://ottonft.com',
     currency: 'MATIC',
   },
 };

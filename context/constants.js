@@ -1,4 +1,4 @@
 import market from './OttoMarketplace.json';
 
-export const MarketAddress = '0x5FC8d32690cc91D4c39d9d3abcBD16989F875707';
+export const MarketAddress = '0x197A55FC40Cee02025F767ef9F79f01c29B1435A';
 export const MarketAddressABI = market.abi;
