@@ -77,17 +77,6 @@ contract OttoStorage is Ownable, IOttoMarketplace {
       ottoShare = _share;
     }
 
-    // Scale
-    uint96 private scale = 10;
-    
-    function getScale() public view isAllowed returns (uint96 _scale){
-      return scale;
-    }
-
-    function setScale (uint96 _scale) public isAllowed {
-      scale = _scale;
-    }
-
     // Otto Wallet
     address private otto;
     

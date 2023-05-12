@@ -18,7 +18,7 @@ contract OttoRoyalty is ERC2981 {
     }
 
     function _feeDenominator() internal pure override returns (uint96) {
-        return 10;
+        return 100;
     }   
 
     function feeDenominator() public view isAllowed returns (uint96) {
