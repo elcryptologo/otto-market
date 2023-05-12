@@ -15,6 +15,8 @@ import "./IOttoMarketplace.sol";
 contract OttoMarketplace is IOttoMarketplace, Ownable, ERC1155, IERC1155Receiver, ReentrancyGuard {
   OttoStorage db;
   OttoRoyalty royalty;
+  uint256 constant MAX_GAS_LIMIT = 1000000;
+  uint256 constant MAX_MINT_LIMIT = 1000;
 
   event MarketItemCreated (
     bytes32 indexed tokenSeller,
@@ -86,6 +88,8 @@ contract OttoMarketplace is IOttoMarketplace, Ownable, ERC1155, IERC1155Receiver
 
   /* Mints a token and lists it in the marketplace */
   function createToken(string memory _tokenURI, uint256 _price, uint256 _amount, uint96 _royaltyFee) public payable returns (bytes32) {
+    require(gasleft() <= MAX_GAS_LIMIT, "Gas limit reached");
+    require(_amount <= MAX_MINT_LIMIT, "Mint limit reached");
     uint256 tokenId = db.nextTokenId();
     bytes32 tokenSeller = hash(msg.sender, tokenId, "");
       
@@ -99,10 +103,11 @@ contract OttoMarketplace is IOttoMarketplace, Ownable, ERC1155, IERC1155Receiver
     return tokenSeller;
   }
 
-  function createMarketItem(bytes32 _tokenSeller, uint256 _tokenId, uint256 _price, uint256 _amount) private {
+  function createMarketItem(bytes32 _tokenSeller, uint256 _tokenId, uint256 _price, uint256 _amount) private {    
+    require(msg.sender.balance >= _price * _amount, "Insufficient funds");
     require(_price > 0, "Price must be at least 1 wei");
     require(msg.value == db.getListingPrice(), "Price must be equal to listing price");
-    //TODO require() balance of sender matic
+
 
     db.setMarketItem(_tokenSeller, MarketItem(
       _tokenSeller,
@@ -115,7 +120,7 @@ contract OttoMarketplace is IOttoMarketplace, Ownable, ERC1155, IERC1155Receiver
     ));
   }
 
-  function createResellItem(bytes32 _tokenSeller, bytes32 _newTokenSeller, uint256 _price, uint256 _amount)private {
+  function createResellItem(bytes32 _tokenSeller, bytes32 _newTokenSeller, uint256 _price, uint256 _amount) private {
     require(_price > 0, "Price must be at least 1 wei");
     require(_amount > 0, "Amount must be greater than 0");
     
@@ -142,7 +147,8 @@ contract OttoMarketplace is IOttoMarketplace, Ownable, ERC1155, IERC1155Receiver
 
   /* Creates the sale of a marketplace item */
   /* Transfers ownership of the item, as well as funds between parties */
-  function createMarketSale(bytes32 _tokenSeller, uint256 _amount) public payable nonReentrant {
+  function createMarketSale(bytes32 _tokenSeller, uint256 _amount) public payable nonReentrant {    
+    require(gasleft() <= MAX_GAS_LIMIT, "Max gas limit reached");
     require(_amount > 0, "Invalid amount.");
 
     MarketItem memory item = db.getMarketItem(_tokenSeller);
@@ -150,11 +156,12 @@ contract OttoMarketplace is IOttoMarketplace, Ownable, ERC1155, IERC1155Receiver
     require( item.tokenId > 0, "Invalid tokenId.");
     require(_amount <= item.amount - item.sold, "Cannot buy more than the available amount.");
     require(msg.value == item.price * _amount, "Please submit the asking price in order to complete the purchase");
-
-    uint fee = msg.value * db.getOttoShare() / royalty.feeDenominator();
+    require(msg.sender.balance >= msg.value, "Insufficient funds");
     
+    uint fee = msg.value * db.getOttoShare() / royalty.feeDenominator();
     (address origOwner, uint256 royalties) = royalty.royaltyInfo(item.tokenId, msg.value);
-    payable(this.owner()).transfer(db.getListingPrice());
+    
+    payable(this.owner()).transfer(msg.value - royalties - fee);
     payable(origOwner).transfer(royalties);
     payable(db.getOttoWallet()).transfer(fee);
     item.seller.call{value: (msg.value - fee - royalties), gas: 5000};
@@ -166,7 +173,7 @@ contract OttoMarketplace is IOttoMarketplace, Ownable, ERC1155, IERC1155Receiver
       createResellItem(_tokenSeller, newTokenSeller, item.price, _amount);
     }
 
-    this.safeTransferFrom(address(this), msg.sender, item.tokenId, _amount, "");
+    _safeTransferFrom(address(this), msg.sender, item.tokenId, _amount, "");
     
     if (item.amount == item.sold){
       item.owner = payable(address(0));
@@ -196,9 +203,10 @@ contract OttoMarketplace is IOttoMarketplace, Ownable, ERC1155, IERC1155Receiver
   }
 
   /* allows someone to resell a token they have purchased */
-  function resellToken(bytes32 _tokenSeller, string memory _tokenURI, uint256 _price) public payable {
+  function resellToken(bytes32 _tokenSeller, string memory _tokenURI, uint256 _price) public payable nonReentrant {
     MarketItem memory item = db.getMarketItem(_tokenSeller);
 
+    require(gasleft() <= MAX_GAS_LIMIT, "Max gas limit reached");
     require(item.owner == msg.sender, "Only item owner can perform this operation");
     require(balanceOf(msg.sender, item.tokenId) >= 0, "Cannot sell tokens you do not own.");
     require(msg.value >= db.getListingPrice(), "Price must be equal or greater to listing price");   
@@ -213,8 +221,6 @@ contract OttoMarketplace is IOttoMarketplace, Ownable, ERC1155, IERC1155Receiver
 
     db.setTokenUri(_tokenSeller, _tokenURI);
     _safeTransferFrom(msg.sender, address(this), item.tokenId, origAmount, "");
-
-    // emit db.MarketItemCreated(_tokenSeller, tokenId, msg.sender, address(this), _price, origAmount, sold);
   }
 
   function getAllItems() public view returns (MarketItem[] memory _items) {
