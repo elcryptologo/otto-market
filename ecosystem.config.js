@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: 'otto-market',
-      script: './pages/index.js',
+      script: 'npx hardhat node',
       watch: false,
       autorestart: true,
       error_file: './error.log',

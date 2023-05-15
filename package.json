@@ -1,12 +1,14 @@
- {
- "name": "otto-market",
-  "version": "0.1.0",
+{
+  "name": "otto-market",
+  "version": "0.1.1",
   "private": true,
-  "scripts": {
-    "start": "pm2-runtime start ecosystem.config.js --env production",
-    "start_dev": "pm2-runtime start ecosystem.config.js --env" 
+  "scripts": {    
+    "predeploy": "npm run build",
+    "dev": "next dev",
+    "build": "next build",
+    "lint": "next lint",
+    "start": "pm2-runtime start ecosystem.config.js --env production"
   },
-  
   "browser": {
     "fs": false,
     "path": false,
@@ -70,5 +72,9 @@
     "ethereum-waffle": "^3.0.0",
     "postcss": "^8.4.16",
     "tailwindcss": "^3.1.8"
-  }
+  },
+  "description": "![Otto NFT Marketplace](https://i.ibb.co/K2FjvH3/Home.png)",
+  "homepage": "https://github.com/elcryptologo/otto-market#readme",
+  "main": ".eslintrc.js",
+  "keywords": []
 }
