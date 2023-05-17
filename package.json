@@ -2,12 +2,12 @@
   "name": "otto-market",
   "version": "0.1.1",
   "private": true,
-  "scripts": {    
+  "scripts": {
     "predeploy": "npm run build",
     "dev": "next dev",
     "build": "next build",
     "lint": "next lint",
-    "start": "pm2-runtime start ecosystem.config.js --env production"
+    "start": "pm2-runtime start ecosystem.config.js --env production -r esm"
   },
   "browser": {
     "fs": false,
@@ -32,6 +32,7 @@
     "axios": "^0.26.0",
     "base-path-converter": "^1.0.2",
     "dotenv": "^16.0.3",
+    "esm": "^3.2.25",
     "ethers": "^5.0.0",
     "form-data": "^4.0.0",
     "fs": "^0.0.1-security",
