@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: 'otto-market',
-      script: './pages/index.js',
+      script: '/home/site/wwwroot/pages/index.js',
       watch: false,
       autorestart: true,
       error_file: './error.log',
