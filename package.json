@@ -7,7 +7,7 @@
     "dev": "next dev",
     "build": "next build",
     "lint": "next lint",
-    "start": "pm2-runtime start ecosystem.config.cjs --env production"
+    "start": "pm2-runtime start ecosystem.config.cjs --env production -r esm"
   },
   "browser": {
     "fs": false,
