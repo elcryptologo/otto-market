@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: 'otto-market',
-      script: '/home/site/wwwroot/pages/index.js',
+      script: 'pm2 start npm --name "otto-market" --start',
       watch: false,
       autorestart: true,
       error_file: './error.log',
