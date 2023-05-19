@@ -7,7 +7,7 @@
     "dev": "next dev",
     "build": "next build",
     "lint": "next lint",
-    "start": "pm2-runtime start ecosystem.config.cjs --env production -r esm"
+    "start": "pm2-runtime start ecosystem.config.cjs --env production"
   },
   "browser": {
     "fs": false,
@@ -32,7 +32,6 @@
     "axios": "^0.26.0",
     "base-path-converter": "^1.0.2",
     "dotenv": "^16.0.3",
-    "esm": "^3.2.25",
     "ethers": "^5.0.0",
     "form-data": "^4.0.0",
     "fs": "^0.0.1-security",
