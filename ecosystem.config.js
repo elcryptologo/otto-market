@@ -2,7 +2,8 @@ module.exports = {
   apps: [
     {
       name: 'otto-market',
-      script: 'pm2 start npm --name "otto-market" --start',
+      script: './node_modules/next/dist/bin/next',
+      args: 'start -p ' + (process.env.PORT || 3000),
       watch: false,
       autorestart: true,
       error_file: './error.log',
