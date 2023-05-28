@@ -4,7 +4,6 @@
   "private": true,
   "scripts": {
     "predeploy": "npm run build",
-    "install": "npm i --force",
     "dev": "next dev",
     "build": "next build",
     "lint": "next lint",
