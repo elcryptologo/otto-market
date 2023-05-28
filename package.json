@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "predeploy": "npm run build",
-    "install": "npm i -g npm-check-updates && ncu -u && npm i --force",
+    "install": "npm i --force",
     "dev": "next dev",
     "build": "next build",
     "lint": "next lint",
