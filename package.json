@@ -3,7 +3,8 @@
   "version": "0.1.2",
   "private": true,
   "scripts": {
-    "predeploy": "npm install && npm run build",
+    "predeploy": "npm run build",
+    "install": "npm install",
     "dev": "next dev",
     "build": "next build",
     "lint": "next lint",
