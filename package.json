@@ -1,13 +1,13 @@
 {
   "name": "otto-market",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "scripts": {
     "predeploy": "npm run build",
     "dev": "next dev",
     "build": "next build",
     "lint": "next lint",
-    "start": "pm2 start ecosystem.config.js --env production"
+    "start": "pm2-runtime start ecosystem.config.js --env production"
   },
   "browser": {
     "fs": false,
