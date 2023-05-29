@@ -7,7 +7,7 @@
     "dev": "next dev",
     "build": "next build",
     "lint": "next lint",
-    "start": "npm install pm2@latest -g && pm2 start ecosystem.config.js --env production --no-daemon"
+    "start": "rm -rf node_modules && npm ci && pm2 start ecosystem.config.js --env production --no-daemon"
   },
   "browser": {
     "fs": false,
