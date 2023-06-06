@@ -27,12 +27,12 @@ export const NFTProvider = ({ children }) => {
     const data = await contract.getMarketItems();
 
     console.log('Before tokenuri');
-    const items = await Promise.all(data.map(async ({ tokenSeller, tokenId, seller, owner, price: unformattedPrice, amount, sold }) => {
-      const tokenURI = await contract.tokenURI(tokenSeller);
+    const items = await Promise.all(data.map(async ({ tokenCreator, tokenId, seller, owner, price: unformattedPrice, amount, sold }) => {
+      const tokenURI = await contract.tokenURI(tokenCreator);
       console.log(`tokenuri: ${tokenURI}`);
       const { data: { image, name, description } } = await axios.get(tokenURI);
       const price = ethers.utils.formatUnits(unformattedPrice.toString(), 'ether');
-      return { price, tokenId: tokenId.toNumber(), tokenSeller: tokenSeller.toString(), amount: amount.toNumber(), sold: sold.toNumber(), seller, owner, image, name, description, tokenURI };
+      return { price, tokenId: tokenId.toNumber(), tokenCreator: tokenCreator.toString(), amount: amount.toNumber(), sold: sold.toNumber(), seller, owner, image, name, description, tokenURI };
     }));
     return items;
   };
@@ -50,11 +50,11 @@ export const NFTProvider = ({ children }) => {
 
     const data = (type === 'fetchItemsListed') ? await contract.getItemsListed() : await contract.getMyNFTs();
 
-    const items = await Promise.all(data.map(async ({ tokenSeller, tokenId, seller, owner, price: unformattedPrice, amount, sold }) => {
-      const tokenURI = await contract.tokenURI(tokenSeller);
+    const items = await Promise.all(data.map(async ({ tokenCreator, tokenId, seller, owner, price: unformattedPrice, amount, sold }) => {
+      const tokenURI = await contract.tokenURI(tokenCreator);
       const { data: { image, name, description } } = await axios.get(tokenURI);
       const price = ethers.utils.formatUnits(unformattedPrice.toString(), 'ether');
-      return { price, tokenId: tokenId.toNumber(), tokenSeller: tokenSeller.toString(), amount: amount.toNumber(), sold: sold.toNumber(), seller, owner, image, name, description, tokenURI };
+      return { price, tokenId: tokenId.toNumber(), tokenCreator: tokenCreator.toString(), amount: amount.toNumber(), sold: sold.toNumber(), seller, owner, image, name, description, tokenURI };
     }));
 
     return items;
@@ -104,7 +104,7 @@ export const NFTProvider = ({ children }) => {
     const amount = parseInt(formInputAmount, 10);
     const price = ethers.utils.parseUnits((nft.price * amount).toString(), 'ether');
 
-    const transaction = await contract.createMarketSale(nft.tokenSeller, amount, { value: price });
+    const transaction = await contract.createMarketSale(nft.tokenCreator, amount, { value: price });
 
     setIsLoadingNFT(true);
     await transaction.wait();

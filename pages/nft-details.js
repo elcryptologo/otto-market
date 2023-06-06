@@ -47,7 +47,7 @@ const PaymentBodyCmp = ({ nft, nftCurrency, amount }) => (
 const AssetDetails = () => {
   const { nftCurrency, buyNft, currentAccount, isLoadingNFT } = useContext(NFTContext);
   const { session, GetGravatarURL } = useContext(TMDBContext);
-  const [nft, setNft] = useState({ price: '', tokenId: '', tokenSeller: '', amount: '', sold: '', seller: '', owner: '', image: '', name: '', description: '', tokenURI: '' });
+  const [nft, setNft] = useState({ price: '', tokenId: '', tokenCreator: '', amount: '', sold: '', seller: '', owner: '', image: '', name: '', description: '', tokenURI: '' });
   const [paymentModal, setPaymentModal] = useState(false);
   const [successModal, setSuccessModal] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -184,7 +184,7 @@ const AssetDetails = () => {
                     if (formInput.price <= 0) {
                       alert.error('Invalid price.');
                       focusPrice();
-                    } else router.push(`/resell-nft?id=${nft.tokenSeller}&tokenURI=${nft.tokenURI}&amount=${nft.amount}&price=${formInput.price}`);
+                    } else router.push(`/resell-nft?id=${nft.tokenCreator}&tokenURI=${nft.tokenURI}&amount=${nft.amount}&price=${formInput.price}`);
                   }}
                 />
               )

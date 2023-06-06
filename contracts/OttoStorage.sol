@@ -23,12 +23,12 @@ contract OttoStorage is Ownable, IOttoMarketplace {
     //Token URIs
     mapping (bytes32 => string) private tokenURIs;    
 
-    function setTokenUri(bytes32 _tokenSeller, string memory _tokenURI) public isAllowed {
-      tokenURIs[_tokenSeller] = _tokenURI; 
+    function setTokenUri(bytes32 _tokenCreator, string memory _tokenURI) public isAllowed {
+      tokenURIs[_tokenCreator] = _tokenURI; 
     }     
     
-    function getTokenUri(bytes32 _tokenSeller) public view isAllowed returns (string memory) { 
-      return(tokenURIs[_tokenSeller]); 
+    function getTokenUri(bytes32 _tokenCreator) public view isAllowed returns (string memory) { 
+      return(tokenURIs[_tokenCreator]); 
     } 
     
     //Token Ids
@@ -85,14 +85,14 @@ contract OttoStorage is Ownable, IOttoMarketplace {
     }
 
     // Token Sellers
-    bytes32[] private tokenSellers;
+    bytes32[] private tokenCreators;
     
-    function addTokenSeller(bytes32 _seller) public isAllowed {
-      tokenSellers.push(_seller);
+    function addTokenCreator(bytes32 _seller) public isAllowed {
+      tokenCreators.push(_seller);
     }
 
-    function getTokenSellers() public view isAllowed returns (bytes32[] memory _addresses) {
-      return tokenSellers;
+    function getTokenCreators() public view isAllowed returns (bytes32[] memory _addresses) {
+      return tokenCreators;
     }
 
     mapping(bytes32 => MarketItem) private marketItems;
@@ -112,14 +112,14 @@ contract OttoStorage is Ownable, IOttoMarketplace {
       uint256 currentIndex = 0;
       uint256 totalTokens = 0;
       
-      for (uint i = 0; i < tokenSellers.length; i++){
+      for (uint i = 0; i < tokenCreators.length; i++){
         totalTokens += 1;
       }
 
       _items = new MarketItem[](totalTokens);
       
       for (uint i = 0; i < totalTokens; i++) {
-        MarketItem storage currentItem = marketItems[tokenSellers[i]];
+        MarketItem storage currentItem = marketItems[tokenCreators[i]];
 
           _items[currentIndex] = currentItem;
         currentIndex += 1;
@@ -133,17 +133,17 @@ contract OttoStorage is Ownable, IOttoMarketplace {
       uint256 currentIndex = 0;
       uint256 totalTokens = 0;
       
-      for (uint i = 0; i < tokenSellers.length; i++) {
-        if (marketItems[tokenSellers[i]].owner == market) {
+      for (uint i = 0; i < tokenCreators.length; i++) {
+        if (marketItems[tokenCreators[i]].owner == market) {
           totalTokens += 1;
         }
       }
 
       _items = new MarketItem[](totalTokens);
 
-      for (uint i = 0; i < tokenSellers.length; i++) {
-        if (marketItems[tokenSellers[i]].owner == market) {
-          MarketItem storage currentItem = marketItems[tokenSellers[i]];
+      for (uint i = 0; i < tokenCreators.length; i++) {
+        if (marketItems[tokenCreators[i]].owner == market) {
+          MarketItem storage currentItem = marketItems[tokenCreators[i]];
 
           _items[currentIndex] = currentItem;
 
@@ -160,17 +160,17 @@ contract OttoStorage is Ownable, IOttoMarketplace {
       uint totalTokens = 0;
       uint currentIndex = 0;
 
-      for (uint i = 0; i < tokenSellers.length; i++) {
-        if (marketItems[tokenSellers[i]].owner == sender) {
+      for (uint i = 0; i < tokenCreators.length; i++) {
+        if (marketItems[tokenCreators[i]].owner == sender) {
           totalTokens += 1;
         }
       }
 
       _items = new MarketItem[](totalTokens);
 
-      for (uint i = 0; i < tokenSellers.length; i++) {
-        if (marketItems[tokenSellers[i]].owner == sender) {
-          MarketItem storage currentItem = marketItems[tokenSellers[i]];
+      for (uint i = 0; i < tokenCreators.length; i++) {
+        if (marketItems[tokenCreators[i]].owner == sender) {
+          MarketItem storage currentItem = marketItems[tokenCreators[i]];
 
           _items[currentIndex] = currentItem;
 
@@ -187,17 +187,17 @@ contract OttoStorage is Ownable, IOttoMarketplace {
       uint totalTokens = 0;
       uint currentIndex = 0;
 
-      for (uint i = 0; i < tokenSellers.length; i++) {
-        if (marketItems[tokenSellers[i]].seller == sender && marketItems[tokenSellers[i]].sold < marketItems[tokenSellers[i]].amount) {
+      for (uint i = 0; i < tokenCreators.length; i++) {
+        if (marketItems[tokenCreators[i]].seller == sender && marketItems[tokenCreators[i]].sold < marketItems[tokenCreators[i]].amount) {
           totalTokens += 1;
         }
       }
 
       _items = new MarketItem[](totalTokens);
 
-      for (uint i = 0; i < tokenSellers.length; i++) {
-        if (marketItems[tokenSellers[i]].seller == sender && marketItems[tokenSellers[i]].sold < marketItems[tokenSellers[i]].amount) {
-          MarketItem storage currentItem = marketItems[tokenSellers[i]];
+      for (uint i = 0; i < tokenCreators.length; i++) {
+        if (marketItems[tokenCreators[i]].seller == sender && marketItems[tokenCreators[i]].sold < marketItems[tokenCreators[i]].amount) {
+          MarketItem storage currentItem = marketItems[tokenCreators[i]];
 
           _items[currentIndex] = currentItem;
 

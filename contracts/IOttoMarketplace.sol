@@ -3,7 +3,7 @@ pragma solidity ^0.8.4;
 
 interface IOttoMarketplace {
     struct MarketItem {
-      bytes32 tokenSeller;
+      bytes32 tokenCreator;
       uint256 tokenId;
       address payable seller;
       address payable owner;

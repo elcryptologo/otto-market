@@ -107,7 +107,7 @@ const MyNFTs = () => {
             <SearchBar activeSelect={activeSelect} setActiveSelect={setActiveSelect} handleSearch={onHandleSearch} clearSearch={onClearSearch} />
           </div>
           <div className="mt-3 w-full flex flex-wrap">
-            {nfts.map((nft) => <NFTCard key={`nft-${nft.tokenSeller}`} nft={nft} onProfilePage />)}
+            {nfts.map((nft) => <NFTCard key={`nft-${nft.tokenCreator}`} nft={nft} onProfilePage />)}
           </div>
         </div>
       )}

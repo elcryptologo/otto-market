@@ -158,7 +158,7 @@ const Home = () => {
                 </div>
               </div>
               <div className="mt-3 w-full flex flex-wrap justify-start md:justify-center">
-                {nfts.map((nft) => <NFTCard key={nft.tokenSeller} nft={nft} />)}
+                {nfts.map((nft) => <NFTCard key={nft.tokenCreator} nft={nft} />)}
               </div>
             </div>
           </>

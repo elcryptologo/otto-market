@@ -50,7 +50,7 @@
         {
           "indexed": true,
           "internalType": "bytes32",
-          "name": "tokenSeller",
+          "name": "tokenCreator",
           "type": "bytes32"
         },
         {
@@ -257,7 +257,7 @@
       "inputs": [
         {
           "internalType": "bytes32",
-          "name": "_tokenSeller",
+          "name": "_tokenCreator",
           "type": "bytes32"
         },
         {
@@ -313,7 +313,7 @@
           "components": [
             {
               "internalType": "bytes32",
-              "name": "tokenSeller",
+              "name": "tokenCreator",
               "type": "bytes32"
             },
             {
@@ -363,7 +363,7 @@
           "components": [
             {
               "internalType": "bytes32",
-              "name": "tokenSeller",
+              "name": "tokenCreator",
               "type": "bytes32"
             },
             {
@@ -426,7 +426,7 @@
           "components": [
             {
               "internalType": "bytes32",
-              "name": "tokenSeller",
+              "name": "tokenCreator",
               "type": "bytes32"
             },
             {
@@ -476,7 +476,7 @@
           "components": [
             {
               "internalType": "bytes32",
-              "name": "tokenSeller",
+              "name": "tokenCreator",
               "type": "bytes32"
             },
             {
@@ -673,7 +673,7 @@
       "inputs": [
         {
           "internalType": "bytes32",
-          "name": "_tokenSeller",
+          "name": "_tokenCreator",
           "type": "bytes32"
         },
         {
@@ -799,7 +799,7 @@
       "inputs": [
         {
           "internalType": "bytes32",
-          "name": "_tokenSeller",
+          "name": "_tokenCreator",
           "type": "bytes32"
         }
       ],
