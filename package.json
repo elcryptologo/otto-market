@@ -7,7 +7,7 @@
     "dev": "next dev",
     "build": "next build",
     "lint": "next lint",
-    "start": "Remove-Item -Recurse -Force node_modules && npm ci && pm2-runtime start ecosystem.config.js --env production"
+    "start": "npm ci && pm2-runtime start ecosystem.config.js --env production"
   },
   "browser": {
     "fs": false,
