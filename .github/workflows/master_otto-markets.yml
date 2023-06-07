@@ -23,15 +23,19 @@ jobs:
 
       - name: npm install, build, and test
         run: |
-          npm install
+          npm install --production
+          npm install -g npm@latest
           npm run build --if-present
           npm run test --if-present
+
+      - name: Zip the code
+        run: zip -r node-app.zip ./* .next -qr
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
           name: node-app
-          path: .
+          path: node-app.zip
 
   deploy:
     runs-on: ubuntu-latest
@@ -53,4 +57,7 @@ jobs:
           app-name: 'otto-markets'
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_CC800B59671946C8B19940634A79A20F }}
-          package: .
+          package: node-app.zip
+
+      - name: 'Delete zip file'
+        run: rm node-app.zip
