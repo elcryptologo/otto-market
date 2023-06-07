@@ -3,7 +3,7 @@ module.exports = {
     {
       name: 'otto-market',
       script: './node_modules/next/dist/bin/next',
-      args: 'start -p ' + (process.env.PORT || 3000),
+      args: `start -p ${process.env.PORT || 3000}`,
       watch: false,
       autorestart: true,
       error_file: './error.log',
