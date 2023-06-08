@@ -8,7 +8,7 @@ module.exports = {
       autorestart: true,
       error_file: './error.log',
       out_file: './output.log',
-      env: {
+      env_development: {
         NODE_ENV: 'development',
         PORT: 3000,
       },
