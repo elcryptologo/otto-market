@@ -2,7 +2,7 @@
   "name": "otto-market",
   "version": "0.1.5",
   "engines": {
-    "node": "18.x"
+    "node": "16.x"
     }, 
   "private": true,
   "scripts": {
@@ -10,7 +10,7 @@
     "dev": "next dev",
     "build": "next build",
     "lint": "next lint",
-    "start": "pm2-runtime start ecosystem.config.js --env production"
+    "start": "pm2 start ecosystem.config.js --env production --no-daemon"
   },
   "browser": {
     "fs": false,
