@@ -15,24 +15,19 @@ import images from '../assets';
 
 const CreateItem = () => {
   const { createToken, isLoadingNFT } = useContext(NFTContext);
-  const { session } = useContext(TMDBContext);
+  const { session, HasSession } = useContext(TMDBContext);
   const [fileUrl, setFileUrl] = useState(null);
   const { theme } = useTheme();
   const alert = useAlert();
+  const router = useRouter();
   const minRoyalty = 0;
   const maxRoyalty = 50;
 
   useEffect(() => {
-    if (session === '') {
-      alert.show('Please login first.', {
-        type: 'error',
-        onClose: () => {
-          const router = useRouter();
-          router.push('/');
-        },
-      });
+    if (session === '' || !HasSession()) {
+      router.push('/');
     }
-  }, [session]);
+  }, [session, HasSession]);
 
   const uploadToPinata = async (file) => {
     try {
@@ -60,7 +55,6 @@ const CreateItem = () => {
       alert.show(`Error uploading file: ${error}`, {
         type: 'error',
         onClose: () => {
-          const router = useRouter();
           router.push('/');
         },
       });
@@ -88,7 +82,6 @@ const CreateItem = () => {
   );
 
   const [formInput, updateFormInput] = useState({ price: '', amount: '', royalties: '', name: '', description: '' });
-  const router = useRouter();
 
   const createMarket = async () => {
     const { price, amount, royalties, name, description } = formInput;

@@ -26,7 +26,6 @@ export const NFTProvider = ({ children }) => {
 
     const data = await contract.getMarketItems();
 
-    console.log('Before tokenuri');
     const items = await Promise.all(data.map(async ({ tokenCreator, tokenId, seller, owner, price: unformattedPrice, amount, sold }) => {
       const tokenURI = await contract.tokenURI(tokenCreator);
       console.log(`tokenuri: ${tokenURI}`);
@@ -129,6 +128,7 @@ export const NFTProvider = ({ children }) => {
       setCurrentAccount(accounts[0]);
     } else {
       console.log('No accounts found');
+      console.log(window.location.href);
     }
   };
 

@@ -7,13 +7,15 @@ import { Banner, Loader } from '../components';
 const LoginNFTs = () => {
   const router = useRouter();
   const [isLoading] = useState(false);
-  const { session } = useContext(TMDBContext);
+  const { session, HasSession } = useContext(TMDBContext);
 
   useEffect(() => {
-    if (session !== '') {
+    if (session !== '' && HasSession()) {
       router.push('/my-nfts');
+    } else {
+      router.push('/');
     }
-  }, [session]);
+  }, [session, HasSession]);
 
   if (isLoading) {
     return (

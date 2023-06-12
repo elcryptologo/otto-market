@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 export const TMDBContext = React.createContext();
 
 export const TMDBProvider = ({ children }) => {
-  const [expires, setExpiration] = useState(new Date());
+  const [expiration, setExpiration] = useState(new Date());
   const [requestToken, setRequestToken] = useState('');
   const [session, setSession] = useState('');
   const [name, setName] = useState('');
@@ -16,19 +16,20 @@ export const TMDBProvider = ({ children }) => {
 
   const GetToken = async () => {
     try {
-      if (requestToken !== '' || expires.setHours(1) < Date.now) return [];
+      if (requestToken !== '') return [];
       const response = await fetch(`${process.env.tmdbApiHost}/3/authentication/token/new?api_key=${process.env.tmdbKey}`);
       const result = await response.json();
       const items = [result].map((tmdb) => {
-        if (!tmdb.success) {
+        if (!tmdb.success || typeof window === 'undefined') {
           alert(`Error in GetToken: ${tmdb.status_message}`);
           return [];
         }
-        setExpiration(tmdb.expires_at);
+        const adate = new Date(Date.parse(tmdb.expires_at));
+        setExpiration(adate);
         setRequestToken(tmdb.request_token);
-        window.sessionStorage.setItem('expires', expires);
+        window.sessionStorage.setItem('expiration', adate);
         window.sessionStorage.setItem('hasSession', false);
-        return [{ expires, requestToken }];
+        return [{ expiration, requestToken }];
       });
       return items;
     } catch (error) {
@@ -39,12 +40,17 @@ export const TMDBProvider = ({ children }) => {
 
   const GetSessionURL = () => {
     if (requestToken === '') return '';
-    return (`${process.env.tmdbHost}/authenticate/${requestToken}?redirect_to=${process.env.localHost}/login-nfts`);
+    const { origin } = new URL(window.location.href);
+    return (`${process.env.tmdbHost}/authenticate/${requestToken}?redirect_to=${origin}/login-nfts`);
+  };
+
+  const HasSession = async () => {
+    if (typeof window === 'undefined' || window.sessionStorage.getItem('expiration') === 'undefined' || window.sessionStorage.getItem('expiration') < Date.now()) return [];
   };
 
   const GetSession = async (token) => {
     try {
-      if (token === '' || expires.setHours(1) < Date.now) return;
+      if (!HasSession()) return [];
       const response = await fetch(`${process.env.tmdbApiHost}/3/authentication/session/new?api_key=${process.env.tmdbKey}&request_token=${token}`);
       const result = await response.json();
       setSession([result].map((tmdb) => {
@@ -72,7 +78,6 @@ export const TMDBProvider = ({ children }) => {
       setGravatar('');
       _session = '';
       window.sessionStorage.clear();
-      window.location.reload();
     } catch (error) {
       alert(error);
       return '';
@@ -104,17 +109,17 @@ export const TMDBProvider = ({ children }) => {
 
   useEffect(async () => {
     if (!router.isReady) return;
-    if (router.query.request_token !== undefined && window.sessionStorage.getItem('expires').setHours(1) > Date.now) {
+    if (router.query.request_token !== undefined) {
       setRequestToken(router.query.request_token);
-      setExpiration(window.sessionStorage.getItem('expires'));
       await GetSession(router.query.request_token);
       await GetAccountDetails();
-      console.log(window.location.href);
-    } else { GetToken(); }
+    } else {
+      GetToken();
+    }
   }, [router.isReady]);
 
   return (
-    <TMDBContext.Provider value={{ name, userName, session, GetGravatarURL, GetSessionURL, DeleteSession }}>
+    <TMDBContext.Provider value={{ name, userName, session, HasSession, GetGravatarURL, GetSessionURL, DeleteSession }}>
       {children}
     </TMDBContext.Provider>
   );

@@ -1,5 +1,4 @@
 import { useEffect, useState, useContext } from 'react';
-import { useAlert } from 'react-alert';
 import Image from 'next/image';
 
 import { useRouter } from 'next/router';
@@ -10,22 +9,18 @@ import { Loader, NFTCard, Banner } from '../components';
 import images from '../assets';
 
 const CreatorDashboard = () => {
-  const alert = useAlert();
   const router = useRouter();
   const { fetchMyNFTsOrCreatedNFTs, currentAccount } = useContext(NFTContext);
-  const { session, userName, GetGravatarURL } = useContext(TMDBContext);
+  const { session, HasSession, userName, GetGravatarURL } = useContext(TMDBContext);
   const avatarImg = GetGravatarURL();
   const [nfts, setNfts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (session === '') {
-      alert.show('Please login first.', {
-        type: 'error',
-        onClose: () => { router.push('/'); },
-      });
+    if (session === '' || !HasSession()) {
+      router.push('/');
     }
-  }, [session]);
+  }, [session, HasSession]);
 
   useEffect(() => {
     fetchMyNFTsOrCreatedNFTs('fetchItemsListed')

@@ -67,8 +67,6 @@ const LoginButtonGroup = ({ router }) => {
         classStyles="mx-2 rounded-xl"
         handleClick={async () => {
           if (!currentAccount) await connectWallet();
-          console.log('passed connected wallet');
-          console.log(GetSessionURL());
           router.push(await GetSessionURL());
         }}
       />
@@ -88,6 +86,8 @@ const LoginButtonGroup = ({ router }) => {
 
 const WalletButtonGroup = ({ setActive, router }) => {
   const { connectWallet, currentAccount } = useContext(NFTContext);
+  const { session } = useContext(TMDBContext);
+  const alert = useAlert();
 
   return currentAccount ? (
     <div className="flexCenter">
@@ -96,8 +96,12 @@ const WalletButtonGroup = ({ setActive, router }) => {
         btnType="primary"
         classStyles="mx-2 rounded-xl"
         handleClick={() => {
-          setActive('');
-          router.push('/create-nft');
+          if (session === '') {
+            alert.show('Please login first.');
+          } else {
+            setActive('');
+            router.push('/create-nft');
+          }
         }}
       />
     </div>
