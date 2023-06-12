@@ -44,7 +44,7 @@ export const TMDBProvider = ({ children }) => {
 
   const GetSession = async (token) => {
     try {
-      if (token === '') return;
+      if (token === '' || expires.setHours(1) < Date.now) return;
       const response = await fetch(`${process.env.tmdbApiHost}/3/authentication/session/new?api_key=${process.env.tmdbKey}&request_token=${token}`);
       const result = await response.json();
       setSession([result].map((tmdb) => {
@@ -73,12 +73,6 @@ export const TMDBProvider = ({ children }) => {
       _session = '';
       window.sessionStorage.clear();
       window.location.reload();
-      // const response = await fetch('https://api.themoviedb.org/3/authentication/session?api_key=b204a0381ec6e87c4459f4b9ad7759d2');
-      // const result = await response.json();
-      // [result].map((tmdb) => {
-      //   if (!tmdb.success) { console.log(`Error in DeleteSession: ${tmdb.status_message}`); }
-      //   return '';
-      // });
     } catch (error) {
       alert(error);
       return '';
@@ -110,11 +104,12 @@ export const TMDBProvider = ({ children }) => {
 
   useEffect(async () => {
     if (!router.isReady) return;
-    if (router.query.request_token !== undefined) {
+    if (router.query.request_token !== undefined && window.sessionStorage.getItem('expires').setHours(1) > Date.now) {
       setRequestToken(router.query.request_token);
       setExpiration(window.sessionStorage.getItem('expires'));
       await GetSession(router.query.request_token);
       await GetAccountDetails();
+      console.log(window.location.href);
     } else { GetToken(); }
   }, [router.isReady]);
 
