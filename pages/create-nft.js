@@ -15,7 +15,7 @@ import images from '../assets';
 
 const CreateItem = () => {
   const { createToken, isLoadingNFT } = useContext(NFTContext);
-  const { session, HasSession } = useContext(TMDBContext);
+  const { session } = useContext(TMDBContext);
   const [fileUrl, setFileUrl] = useState(null);
   const { theme } = useTheme();
   const alert = useAlert();
@@ -24,10 +24,10 @@ const CreateItem = () => {
   const maxRoyalty = 50;
 
   useEffect(() => {
-    if (session === '' || !HasSession()) {
-      router.push('/');
+    if (session === '') {
+      router.replace('/');
     }
-  }, [session, HasSession]);
+  }, [session]);
 
   const uploadToPinata = async (file) => {
     try {

@@ -44,13 +44,8 @@ export const TMDBProvider = ({ children }) => {
     return (`${process.env.tmdbHost}/authenticate/${requestToken}?redirect_to=${origin}/login-nfts`);
   };
 
-  const HasSession = async () => {
-    if (typeof window === 'undefined' || window.sessionStorage.getItem('expiration') === 'undefined' || window.sessionStorage.getItem('expiration') < Date.now()) return [];
-  };
-
   const GetSession = async (token) => {
     try {
-      if (!HasSession()) return [];
       const response = await fetch(`${process.env.tmdbApiHost}/3/authentication/session/new?api_key=${process.env.tmdbKey}&request_token=${token}`);
       const result = await response.json();
       setSession([result].map((tmdb) => {
@@ -78,6 +73,7 @@ export const TMDBProvider = ({ children }) => {
       setGravatar('');
       _session = '';
       window.sessionStorage.clear();
+      window.location.reload();
     } catch (error) {
       alert(error);
       return '';
@@ -119,7 +115,7 @@ export const TMDBProvider = ({ children }) => {
   }, [router.isReady]);
 
   return (
-    <TMDBContext.Provider value={{ name, userName, session, HasSession, GetGravatarURL, GetSessionURL, DeleteSession }}>
+    <TMDBContext.Provider value={{ name, userName, session, GetGravatarURL, GetSessionURL, DeleteSession }}>
       {children}
     </TMDBContext.Provider>
   );

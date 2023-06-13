@@ -11,7 +11,7 @@ import images from '../assets';
 const MyNFTs = () => {
   const router = useRouter();
   const { fetchMyNFTsOrCreatedNFTs, currentAccount } = useContext(NFTContext);
-  const { session, HasSession, userName, GetGravatarURL } = useContext(TMDBContext);
+  const { session, userName, GetGravatarURL } = useContext(TMDBContext);
   const [nfts, setNfts] = useState([]);
   const [nftsCopy, setNftsCopy] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -19,10 +19,10 @@ const MyNFTs = () => {
   const avatarImg = GetGravatarURL();
 
   useEffect(() => {
-    if (session === '' || !HasSession()) {
+    if (session === '') {
       router.push('/');
     }
-  }, [session, HasSession]);
+  }, [session]);
 
   useEffect(() => {
     fetchMyNFTsOrCreatedNFTs('fetchMyNFTs')
