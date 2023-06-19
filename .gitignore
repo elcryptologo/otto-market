@@ -34,3 +34,7 @@ typechain
 #Hardhat files
 cache
 artifacts
+vs-git--25519
+vs-git--25519.pub
+vs-git-key
+vs-git-key.pub
